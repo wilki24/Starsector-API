@@ -156,7 +156,7 @@ public class NearbyEventsEvent extends BaseEventPlugin implements RouteFleetSpaw
 								Entities.WRECK, Factions.NEUTRAL, params);
 			entity.addTag(Tags.EXPIRES);
 			entity.setDiscoverable(false);
-			SalvageSpecialAssigner.assignSpecials(entity);
+			SalvageSpecialAssigner.assignSpecials(entity, false);
 			
 
 			float distFromPlayer = 3000f + (float) Math.random() * 2000f;

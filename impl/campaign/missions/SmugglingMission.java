@@ -58,6 +58,7 @@ public class SmugglingMission extends HubMissionWithBarEvent {
 		}
 		
 		requireMarketIsNot(createdAt);
+		requireMarketFactionNotPlayer();
 		requireMarketLocationNot(createdAt.getContainingLocation());
 		requireMarketFactionCustom(ReqMode.NOT_ANY, Factions.CUSTOM_ALLOWS_TRANSPONDER_OFF_TRADE);
 		requireMarketNotHidden();
@@ -90,6 +91,7 @@ public class SmugglingMission extends HubMissionWithBarEvent {
 		setFailureStage(Stage.FAILED);
 		
 		setStageOnMemoryFlag(Stage.COMPLETED, market, "$smug_completed");
+		setNoAbandon();
 		setTimeLimit(Stage.FAILED, MISSION_DAYS, null);
 		
 		

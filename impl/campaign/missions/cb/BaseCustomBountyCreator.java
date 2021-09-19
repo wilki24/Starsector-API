@@ -227,6 +227,7 @@ public class BaseCustomBountyCreator implements CustomBountyCreator {
 	}
 	
 	protected CampaignFleetAPI createFleet(HubMissionWithBarEvent mission, CustomBountyData data) {
+		mission.triggerMakeFleetIgnoreOtherFleetsExceptPlayer();
 		mission.triggerFleetOnlyEngageableWhenVisibleToPlayer();
 		mission.endTrigger();
 		

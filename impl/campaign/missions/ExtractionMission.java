@@ -104,6 +104,7 @@ public class ExtractionMission extends HubMissionWithBarEvent {
 			if (rollProbability(pBase)) {
 				resetSearch();
 				requireMarketIsNot(createdAt);
+				requireMarketFactionNotPlayer();
 				requireMarketMemoryFlag(PirateBaseIntel.MEM_FLAG, true);
 				requireMarketNotInHyperspace();
 				preferMarketInDirectionOfOtherMissions();
@@ -131,6 +132,7 @@ public class ExtractionMission extends HubMissionWithBarEvent {
 		if (market == null) {
 			resetSearch();
 			requireMarketIsNot(createdAt);
+			requireMarketFactionNotPlayer();
 			requireMarketNotHidden();
 			requireMarketNotInHyperspace();
 			preferMarketSizeAtLeast(minMarketSize);
@@ -173,11 +175,16 @@ public class ExtractionMission extends HubMissionWithBarEvent {
 //			sizeModifier = 10 * 10000;;
 //		}
 //		setCreditReward(10000 + sizeModifier, 30000 + sizeModifier);
-		int size = market.getSize();
+		//int size = market.getSize();
+		int extraBonus = 0;
 		if (variation == Variation.PIRATE_BASE || variation == Variation.LUDDIC_PATH_BASE) {
-			size = 10;
+			//size = 10;
+			extraBonus = 75000;
 		}
-		setCreditReward(CreditReward.AVERAGE, size);
+		//setCreditReward(CreditReward.AVERAGE, size);
+		
+		int bonus = getRewardBonusForMarines(getMarinesRequiredForCustomObjective(market, danger));
+		setCreditRewardWithBonus(CreditReward.AVERAGE, bonus + extraBonus);
 		
 		storyCost = getRoundNumber(getCreditsReward() / 2);
 		

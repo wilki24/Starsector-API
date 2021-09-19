@@ -288,6 +288,7 @@ public interface CampaignFleetAPI extends SectorEntityToken, FleetOrStubAPI {
 	boolean hasShipsWithUniqueSig();
 	boolean getGoSlowStop();
 	void goSlowOneFrame();
+	boolean getGoSlowOneFrame();
 }
 
 

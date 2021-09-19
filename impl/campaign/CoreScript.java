@@ -17,11 +17,16 @@ import com.fs.starfarer.api.campaign.BattleAPI;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CampaignTerrainAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.FactionProductionAPI;
+import com.fs.starfarer.api.campaign.FactionProductionAPI.ItemInProductionAPI;
+import com.fs.starfarer.api.campaign.FactionProductionAPI.ProductionItemType;
 import com.fs.starfarer.api.campaign.FleetInflater;
+import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.PlayerMarketTransaction;
@@ -31,19 +36,14 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.SpecialItemPlugin;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
-import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
-import com.fs.starfarer.api.campaign.FactionProductionAPI.ItemInProductionAPI;
-import com.fs.starfarer.api.campaign.FactionProductionAPI.ProductionItemType;
-import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.MonthlyReport;
-import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
+import com.fs.starfarer.api.campaign.econ.MonthlyReport;
 import com.fs.starfarer.api.campaign.econ.MonthlyReport.FDNode;
+import com.fs.starfarer.api.campaign.econ.SubmarketAPI;
 import com.fs.starfarer.api.campaign.listeners.ListenerUtil;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.characters.AdminData;
@@ -872,7 +872,8 @@ public class CoreScript extends BaseCampaignEventListener implements EveryFrameS
 			if (!market.isPlayerOwned()) continue;
 		
 			for (Industry ind : market.getIndustries()) {
-				CargoAPI added = ind.generateCargoForGatheringPoint(random);
+				Random curr = Misc.getRandom(random.nextLong(), 11);
+				CargoAPI added = ind.generateCargoForGatheringPoint(curr);
 				if (added != null && (!added.isEmpty() || 
 						(added.getMothballedShips() != null && !added.getMothballedShips().getMembersListCopy().isEmpty()))) {
 					String title = ind.getCargoTitleForGatheringPoint();

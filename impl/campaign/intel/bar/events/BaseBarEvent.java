@@ -16,6 +16,9 @@ public class BaseBarEvent implements PortsideBarEvent {
 	transient protected OptionPanelAPI options;
 	transient protected Map<String, MemoryAPI> memoryMap;
 
+	public boolean isAlwaysShow() {
+		return false;
+	}
 
 	public void init(InteractionDialogAPI dialog, Map<String, MemoryAPI> memoryMap) {
 		this.dialog = dialog;

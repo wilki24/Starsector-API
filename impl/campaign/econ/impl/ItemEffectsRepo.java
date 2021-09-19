@@ -83,7 +83,7 @@ public class ItemEffectsRepo {
 	
 	public static int BIOFACTORY_PROD_BONUS = 2;
 	
-	public static int CATALYTIC_CORE_BONUS = 2;
+	public static int CATALYTIC_CORE_BONUS = 3;
 	
 	public static float FULLERENE_SPOOL_ACCESS_BONUS = 0.3f;
 	
@@ -156,9 +156,10 @@ public class ItemEffectsRepo {
 				return null;
 			}
 			protected float getShortageHazard(Industry industry) {
-				if (FUSION_LAMP_VOLATILES <= 0 || FUSION_LAMP_SHORTAGE_HAZARD <= 0) return 0f;
+				int volatilesDemand = industry.getDemand(Commodities.VOLATILES).getQuantity().getModifiedInt();
+				if (volatilesDemand <= 0 || FUSION_LAMP_SHORTAGE_HAZARD <= 0) return 0f;
 				float v = industry.getMarket().getCommodityData(Commodities.VOLATILES).getAvailable();
-				float f = 1f - v / (float) FUSION_LAMP_VOLATILES;
+				float f = 1f - v / (float) volatilesDemand;
 				float h = Math.round(f * FUSION_LAMP_SHORTAGE_HAZARD * 100f) / 100f;
 				if (h > 0) {
 					industry.getMarket().getHazard().modifyFlat(spec.getId(), h, 
@@ -509,8 +510,9 @@ public class ItemEffectsRepo {
 			}
 			protected boolean hasShortage(Industry industry) {
 				//if (true) return false;
+				int transplutonicsDemand = industry.getDemand(Commodities.RARE_METALS).getQuantity().getModifiedInt();
 				float v = industry.getMarket().getCommodityData(Commodities.RARE_METALS).getAvailable();
-				float f = 1f - v / (float) CORONAL_TAP_TRANSPLUTONICS;
+				float f = 1f - v / (float) transplutonicsDemand;
 				return f > 0;
 			}
 			protected void addItemDescriptionImpl(Industry industry, TooltipMakerAPI text, SpecialItemData data,

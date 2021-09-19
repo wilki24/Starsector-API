@@ -1,6 +1,7 @@
 package com.fs.starfarer.api.impl.campaign.missions.cb;
 
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.FactionAPI.ShipPickMode;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -82,9 +83,9 @@ public class CBDeserter extends BaseCustomBountyCreator {
 			type = FleetTypes.PATROL_LARGE;
 		} else {
 			size = FleetSize.MAXIMUM;
-			quality = FleetQuality.VERY_HIGH;
+			quality = FleetQuality.HIGHER;
 			oQuality = OfficerQuality.HIGHER;
-			oNum = OfficerNum.ALL_SHIPS;
+			oNum = OfficerNum.MORE;
 			type = FleetTypes.PATROL_LARGE;
 		}
 		
@@ -93,6 +94,7 @@ public class CBDeserter extends BaseCustomBountyCreator {
 		mission.triggerSetFleetOfficers(oNum, oQuality);
 		mission.triggerAutoAdjustFleetSize(size, size.next());
 		mission.triggerSetFleetFaction(Factions.PIRATES);
+		mission.triggerFleetSetShipPickMode(ShipPickMode.PRIORITY_THEN_ALL);
 		
 		mission.triggerFleetSetNoFactionInName();
 		if (faction.getEntityNamePrefix() == null || faction.getEntityNamePrefix().isEmpty()) {

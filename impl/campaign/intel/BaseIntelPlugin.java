@@ -17,8 +17,8 @@ import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StoryPointActionDelegate;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.impl.campaign.CommRelayEntityPlugin.CommSnifferReadableIntel;
@@ -699,11 +699,16 @@ public class BaseIntelPlugin implements IntelInfoPlugin, CallableEvent, EveryFra
 	}
 	
 	public static void addMarketToList(TooltipMakerAPI info, MarketAPI market, float pad) {
+		addMarketToList(info, market, pad, null);
+	}
+	
+	public static void addMarketToList(TooltipMakerAPI info, MarketAPI market, float pad, Color tc) {
+		if (tc == null) tc = Misc.getTextColor();
 		String indent = BaseIntelPlugin.INDENT;
 		if (info.getBulletedListPrefix() != null) indent = "";
 		LabelAPI label = info.addPara(indent + market.getName() + " (size %s, %s)",
 				//faction.getPersonNamePrefixAOrAn() + " %s colony.", 
-				pad, market.getFaction().getBaseUIColor(),
+				pad, tc, market.getFaction().getBaseUIColor(),
 				"" + (int) market.getSize(),
 				market.getFaction().getDisplayName());
 		

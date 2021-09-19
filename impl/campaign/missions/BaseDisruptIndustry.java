@@ -150,7 +150,10 @@ public class BaseDisruptIndustry extends HubMissionWithBarEvent implements Colon
 		}
 		
 		//setCreditReward(80000, 100000);
-		setCreditReward(getRewardTier(), market.getSize());
+		//setCreditReward(getRewardTier(), market.getSize());
+		
+		int bonus = getRewardBonusForMarines(getMarinesRequiredToDisrupt(market, industry, disruptDays));
+		setCreditRewardWithBonus(getRewardTier(), bonus);
 		
 		addExtraTriggers(createdAt);
 		
@@ -161,6 +164,8 @@ public class BaseDisruptIndustry extends HubMissionWithBarEvent implements Colon
 		String id = getMissionId();
 		set("$" + id + "_barEvent", isBarEvent());
 		set("$" + id + "_manOrWoman", getPerson().getManOrWoman());
+		set("$" + id + "_hisOrHer", getPerson().getHisOrHer());
+		set("$" + id + "_heOrShe", getPerson().getHeOrShe());
 		set("$" + id + "_reward", Misc.getWithDGS(getCreditsReward()));
 		set("$" + id + "_industry", industry.getCurrentName());
 		set("$" + id + "_disruptDays", disruptDays);

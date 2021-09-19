@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.AICoreOfficerPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -102,7 +103,8 @@ public class RemnantOfficerGeneratorPlugin extends BaseGenerateFleetOfficersPlug
 		if (params != null && params.noCommanderSkills != null && params.noCommanderSkills) numCommanderSkills = 0;
 		
 		
-		float fpPerCore = 20f;
+		//float fpPerCore = 20f;
+		float fpPerCore = Global.getSettings().getFloat("baseFPPerAICore");
 		
 		if (derelictMode) {
 			fpPerCore = 30 - 20f * coreMult;

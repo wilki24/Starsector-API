@@ -608,7 +608,7 @@ public class TutorialMissionIntel extends BaseIntelPlugin implements EveryFrameS
 			break;
 		case GO_GET_DATA:
 			info.addPara("Sneak into " + derinkuyu.getName(), tc, pad);
-			info.addPara("Contact " + dataContact.getNameString() + " and retreive data", tc, 0f);
+			info.addPara("Contact " + dataContact.getNameString() + " and retrieve data", tc, 0f);
 			break;
 		case GOT_DATA:
 			info.addPara("Deliver data to " + getMainContactPostName() + " at Ancyra", tc, pad);

@@ -67,7 +67,7 @@ public class CBRemnantPlus extends BaseCustomBountyCreator {
 		StarSystemAPI system = mission.pickSystem();
 		data.system = system;
 	
-		FleetSize size = FleetSize.VERY_LARGE;
+		FleetSize size = FleetSize.HUGE;
 		FleetQuality quality = FleetQuality.SMOD_3;
 		OfficerQuality oQuality = OfficerQuality.AI_ALPHA;
 		OfficerNum oNum = OfficerNum.ALL_SHIPS;

@@ -13,27 +13,27 @@ import org.json.JSONObject;
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
+import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
-import com.fs.starfarer.api.campaign.ReputationActionResponsePlugin.ReputationAdjustmentResult;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
+import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.campaign.econ.EconomyAPI.EconomyUpdateListener;
 import com.fs.starfarer.api.campaign.econ.MarketAPI.SurveyLevel;
 import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.combat.MutableStat.StatMod;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin;
-import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.CustomRepImpact;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActionEnvelope;
 import com.fs.starfarer.api.impl.campaign.CoreReputationPlugin.RepActions;
+import com.fs.starfarer.api.impl.campaign.DebugFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Conditions;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -470,6 +470,7 @@ public class LuddicPathBaseIntel extends BaseIntelPlugin implements EveryFrameSc
 			}
 			
 			PirateBaseManager.markRecentlyUsedForBase(system);
+			LuddicPathBaseManager.getInstance().incrDestroyed();
 		}
 	}
 
@@ -621,7 +622,7 @@ public class LuddicPathBaseIntel extends BaseIntelPlugin implements EveryFrameSc
 		
 			info.addPara("This base is known to be providing support to active Pather cells at the following colonies:", opad);
 			for (LuddicPathCellsIntel intel : cells) {
-				addMarketToList(info, intel.getMarket(), initPad);
+				addMarketToList(info, intel.getMarket(), initPad, tc);
 				initPad = 0f;
 			}
 			initPad = 0f;

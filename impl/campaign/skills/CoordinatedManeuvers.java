@@ -20,6 +20,7 @@ public class CoordinatedManeuvers {
 	
 	public static float NAV_FRIGATES = 6f;
 	public static float NAV_DESTROYERS = 3f;
+	public static float NAV_OTHER = 1f;
 	
 	public static float CP_REGEN_FRIGATES = 50f;
 	public static float CP_REGEN_DESTROYERS = 25f;
@@ -55,7 +56,8 @@ public class CoordinatedManeuvers {
 	public static boolean isFrigateOrDestroyerAndOfficer(MutableShipStatsAPI stats) {
 		FleetMemberAPI member = stats.getFleetMember();
 		if (member == null) return false;
-		if (!member.isFrigate() && !member.isDestroyer()) return false;
+		// applies at least 1% in all cases now
+		//if (!member.isFrigate() && !member.isDestroyer()) return false;
 		
 		return !member.getCaptain().isDefault();
 	}
@@ -66,6 +68,7 @@ public class CoordinatedManeuvers {
 				float bonus = 0f;
 				if (hullSize == HullSize.FRIGATE) bonus = NAV_FRIGATES;
 				if (hullSize == HullSize.DESTROYER) bonus = NAV_DESTROYERS;
+				if (hullSize == HullSize.CRUISER || hullSize == HullSize.CAPITAL_SHIP) bonus = NAV_OTHER;
 				if (bonus > 0f) {
 					stats.getDynamic().getMod(Stats.COORDINATED_MANEUVERS_FLAT).modifyFlat(id, bonus);
 				}
@@ -86,9 +89,11 @@ public class CoordinatedManeuvers {
 
 			float opad = 10f;
 			info.addPara("+%s to nav rating* of fleet for deployed frigates, " +
-					     "+%s for destroyers", 0f, hc, hc,
+					     "+%s for destroyers, +%s for larger hulls", 0f, hc, hc,
 					     "" + (int) NAV_FRIGATES + "%",
-					     "" + (int) NAV_DESTROYERS + "%");
+					     "" + (int) NAV_DESTROYERS + "%",
+					     "" + (int) NAV_OTHER + "%"
+					     );
 			//info.addSpacer(opad);
 			
 //			Color c = Misc.getBasePlayerColor();

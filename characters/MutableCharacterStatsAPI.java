@@ -119,6 +119,8 @@ public interface MutableCharacterStatsAPI {
 	void setLevel(int level);
 	boolean isPlayerStats();
 	void addStoryPoints(int points, TextPanelAPI textPanel, boolean makeCharTabFlash);
+	long getBonusXPForSpendingStoryPointBeforeSpendingIt();
+	long getBonusXPUsed(long normalXP);
 	
 
 }

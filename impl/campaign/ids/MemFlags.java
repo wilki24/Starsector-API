@@ -30,6 +30,7 @@ public class MemFlags {
 	
 	public static final String RECENTLY_SALVAGED = "$recentlySalvaged";
 	
+	public static final String FLEET_DO_NOT_IGNORE_PLAYER = "$cfai_doNotIgnorePlayer";
 	public static final String FLEET_IGNORES_OTHER_FLEETS = "$cfai_ignoreOtherFleets";
 	public static final String FLEET_IGNORED_BY_OTHER_FLEETS = "$cfai_ignoredByOtherFleets";
 	
@@ -96,6 +97,7 @@ public class MemFlags {
 	
 	
 	public static final String MEMORY_KEY_AVOID_PLAYER_SLOWLY = "$cfai_avoidPlayerSlowly";
+	public static final String MEMORY_KEY_NEVER_AVOID_PLAYER_SLOWLY = "$cfai_neverAvoidPlayerSlowly";
 	
 	public static final String MEMORY_KEY_MAKE_HOSTILE = "$cfai_makeHostile";
 	public static final String MEMORY_KEY_MAKE_HOSTILE_WHILE_TOFF = "$cfai_makeHostileWhileTOff";

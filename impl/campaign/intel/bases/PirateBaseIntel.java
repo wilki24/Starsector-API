@@ -115,6 +115,9 @@ public class PirateBaseIntel extends BaseIntelPlugin implements EveryFrameScript
 	public PirateBaseIntel(StarSystemAPI system, String factionId, PirateBaseTier tier) {
 		this.system = system;
 		this.tier = tier;
+		
+		raidTimeoutMonths = Tuning.PIRATE_RAID_MIN_TIMEOUT_MONTHS + 
+			Misc.random.nextInt(Tuning.PIRATE_RAID_MAX_TIMEOUT_MONTHS - Tuning.PIRATE_RAID_MIN_TIMEOUT_MONTHS + 1);
 	
 		market = Global.getFactory().createMarket(Misc.genUID(), "Pirate Base", 3);
 		market.setSize(3);

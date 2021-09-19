@@ -87,6 +87,7 @@ public class JailbreakMission extends HubMissionWithBarEvent {
 		requireMarketIsNot(createdAt);
 		requireMarketNotHidden();
 		requireMarketNotInHyperspace();
+		requireMarketFactionNotPlayer();
 		preferMarketSizeAtLeast(minMarketSize);
 		preferMarketSizeAtMost(maxMarketSize);
 		preferMarketInDirectionOfOtherMissions();
@@ -119,8 +120,11 @@ public class JailbreakMission extends HubMissionWithBarEvent {
 		
 		setTimeLimit(Stage.FAILED, MISSION_DAYS, null);
 		
-		int size = market.getSize();
-		setCreditReward(CreditReward.HIGH, size);
+		//int size = market.getSize();
+		//setCreditReward(CreditReward.HIGH, size);
+		
+		int bonus = getRewardBonusForMarines(getMarinesRequiredForCustomObjective(market, danger));
+		setCreditRewardWithBonus(CreditReward.AVERAGE, bonus);
 		
 		storyCost = getRoundNumber(getCreditsReward() / 2);
 		

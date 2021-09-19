@@ -10,10 +10,11 @@ import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.MutableCharacterStatsAPI.SkillLevelAPI;
 import com.fs.starfarer.api.impl.campaign.econ.ShippingDisruption;
+import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetAssignmentAI.EconomyRouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetRouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
-import com.fs.starfarer.api.impl.campaign.fleets.EconomyFleetAssignmentAI.EconomyRouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.ui.LabelAPI;
@@ -31,6 +32,15 @@ public class FleetDesc extends BaseCommandPlugin {
 		
 		FactionAPI faction = fleet.getFaction();
 		TextPanelAPI text = dialog.getTextPanel();
+		
+		if (Global.getSettings().isDevMode()) {
+			text.addParagraph("Admiral skills:");
+			for (SkillLevelAPI skill : fleet.getCommanderStats().getSkillsCopy()) {
+				if (skill.getSkill().isAdmiralSkill()) {
+					text.addParagraph("    " + skill.getSkill().getId());
+				}
+			}
+		}
 		
 		
 		MemoryAPI mem = fleet.getMemoryWithoutUpdate();

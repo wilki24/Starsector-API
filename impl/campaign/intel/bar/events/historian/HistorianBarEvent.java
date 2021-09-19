@@ -145,10 +145,10 @@ public class HistorianBarEvent extends BaseBarEvent {
 						 "I think we can help each other, you and I. See, I have the information,\" " +
 							hd.getHeOrShe() + " taps the book, "+"\"And you have the means.\"");
 			text.addPara("\"I am what you might call a historian-adventurer; a rogue archaelogist uncovering the " +
-						 "history of the Sector despite the danger of this exceptional era. In the course of my my "
+						 "history of the Sector despite the danger of this exceptional era. In the course of my "
 						 + "studies I often chance upon hints about where certain " +
 						 "pieces of technology might be found. Retrieving those artifacts " +
-						 "is, naturally, your role in our arrangement would. ... Only if you're interested,"
+						 "is, naturally, your role in our arrangement. ... Only if you're interested,"
 						 + " of course - but I've done my research " +
 						 "on your exploits and I'm sure that you will be interested.\"\n\nSpeech complete, " + hd.getHeOrShe() +
 						 " leans back, looking pleased.");

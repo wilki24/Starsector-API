@@ -348,7 +348,7 @@ public class TechMining extends BaseIndustry implements MarketImmigrationModifie
 	
 	protected void applyImproveModifiers() {
 		if (isImproved()) {
-			market.getStats().getDynamic().getStat(Stats.TECH_MINING_MULT).modifyMult(getModId(1), IMPROVE_FINDS_BONUS);
+			market.getStats().getDynamic().getStat(Stats.TECH_MINING_MULT).modifyMult(getModId(1), 1f + IMPROVE_FINDS_BONUS);
 		} else {
 			market.getStats().getDynamic().getStat(Stats.TECH_MINING_MULT).unmodifyMult(getModId(1));
 		}

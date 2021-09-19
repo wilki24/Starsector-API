@@ -109,9 +109,10 @@ public class CBPather extends BaseCustomBountyCreator {
 			type = FleetTypes.PATROL_LARGE;
 		} else {// if (difficulty == 10) {
 			size = FleetSize.MAXIMUM;
-			quality = FleetQuality.VERY_HIGH;
+			quality = FleetQuality.HIGHER;
 			oQuality = OfficerQuality.HIGHER;
-			oNum = OfficerNum.ALL_SHIPS;
+			//oNum = OfficerNum.ALL_SHIPS;
+			oNum = OfficerNum.MORE;
 			type = FleetTypes.PATROL_LARGE;
 		}
 		

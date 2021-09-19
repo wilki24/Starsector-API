@@ -30,6 +30,9 @@ public class ExpandedDeckCrew extends BaseHullMod {
 	}
 	
 	public boolean isApplicableToShip(ShipAPI ship) {
+		int baysModified = (int) ship.getMutableStats().getNumFighterBays().getModifiedValue();
+		if (baysModified <= 0) return false; // only count removed bays, not added bays for this
+		
 		int bays = (int) ship.getMutableStats().getNumFighterBays().getBaseValue();
 //		if (ship != null && ship.getVariant().getHullSpec().getBuiltInWings().size() >= bays) {
 //			return false;

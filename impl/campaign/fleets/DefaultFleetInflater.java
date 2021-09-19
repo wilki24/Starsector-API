@@ -449,7 +449,7 @@ public class DefaultFleetInflater implements FleetInflater, AutofitPluginDelegat
 	}
 	
 	public static int getNumDModsToAdd(ShipVariantAPI variant, float averageDMods, Random random) {
-		int dmods = (int) Math.round(averageDMods + random.nextFloat() * 3f - 2f);
+		int dmods = (int) Math.round(averageDMods + random.nextDouble() * 3f - 2f);
 		if (dmods > 5) dmods = 5;
 		int dmodsAlready = DModManager.getNumDMods(variant);
 		dmods -= dmodsAlready;
@@ -462,8 +462,7 @@ public class DefaultFleetInflater implements FleetInflater, AutofitPluginDelegat
 		int sMods = averageSMods;
 		if (f < 0.25f) {
 			sMods = averageSMods - 1;
-		}
-		if (f < 0.5f) {
+		} else if (f < 0.5f) {
 			sMods = averageSMods + 1;
 		}
 		if (sMods > 3) sMods = 3;

@@ -196,6 +196,7 @@ public class GAProjectZiggurat extends GABaseMission { //implements ShipRecovery
 		triggerSetFleetOfficers(OfficerNum.MORE, OfficerQuality.HIGHER);
 		triggerSetFleetFaction(Factions.TRITACHYON);
 		triggerMakeHostileAndAggressive();
+		triggerMakeLowRepImpact();
 		triggerSetFleetDoctrineComp(0, 0, 5);
 		triggerFleetMakeFaster(true, 1, true);
 		triggerPickLocationAtInSystemJumpPoint(relaySystem);

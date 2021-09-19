@@ -465,7 +465,7 @@ public class PlayerFleetPersonnelTracker implements ColonyInteractionListener,
 									 "operations under their belts.", opad);
 					} else {
 						info.addPara("You've led these marines on several operations, and " +
-								"the experience gained by both parties in beginning to show concrete benefits.", opad);
+								"the experience gained by both parties is beginning to show concrete benefits.", opad);
 					}
 					break;
 				case VETERAN:

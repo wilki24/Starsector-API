@@ -384,6 +384,7 @@ public class MarketCMD extends BaseCommandPlugin {
 		CampaignFleetAPI station = getStationFleet();
 		
 		boolean hasNonStation = false;
+		boolean hasOtherButInsignificant = true;
 		boolean hasStation = station != null;
 		boolean otherWantsToFight = false;
 		BattleAPI b = null;
@@ -466,10 +467,20 @@ public class MarketCMD extends BaseCommandPlugin {
 					for (CampaignFleetAPI fleet : b.getSideFor(station)) {
 						if (!fleet.isStationMode()) {
 							hasNonStation = true;
+							hasOtherButInsignificant &= Misc.isInsignificant(fleet);
 						}
 					}
 				} else {
-					hasNonStation = true;
+					if (b.getNonPlayerSide() != null) {
+						for (CampaignFleetAPI fleet : b.getNonPlayerSide()) {
+							if (!fleet.isStationMode()) {
+								hasNonStation = true;
+								hasOtherButInsignificant &= Misc.isInsignificant(fleet);
+							}
+						}
+					} else {
+						hasNonStation = true;
+					}
 				}
 				
 				for (CampaignFleetAPI fleet : b.getOtherSide(playerSide)) {
@@ -480,6 +491,8 @@ public class MarketCMD extends BaseCommandPlugin {
 					}
 				}
 			}
+			
+			if (!hasNonStation) hasOtherButInsignificant = false;
 			
 			//otherWantsToFight = hasStation || plugin.otherFleetWantsToFight(true);
 			
@@ -508,8 +521,13 @@ public class MarketCMD extends BaseCommandPlugin {
 							text.addPara("There are defending ships present, but they are currently involved in a battle, "
 									+ "and you could take advantage of the distraction to launch a raid.");
 						} else {
-							text.addPara("The defending ships present are, with the support of the station, sufficient to prevent " +
+							if (hasOtherButInsignificant) {
+								text.addPara("Defending ships are present, but not in sufficient strength " +
+										 "to want to give battle or prevent any hostile action you might take.");
+							} else {
+								text.addPara("The defending ships present are, with the support of the station, sufficient to prevent " +
 									 "raiding as well.");
+							}
 						}
 					}
 				} else if (hasNonStation && otherWantsToFight) {
@@ -525,7 +543,9 @@ public class MarketCMD extends BaseCommandPlugin {
 				plugin.printOngoingBattleInfo();
 			}
 		}
-			
+
+		if (!hasNonStation) hasOtherButInsignificant = false;
+		
 		options.clearOptions();
 		
 		String engageText = "Engage the defenders";
@@ -558,8 +578,8 @@ public class MarketCMD extends BaseCommandPlugin {
 		options.addOption(engageText, ENGAGE);
 		
 		
-		temp.canRaid = ongoingBattle || !hasNonStation || (hasNonStation && !otherWantsToFight);
-		temp.canBombard = (!hasNonStation || (hasNonStation && !otherWantsToFight)) && !hasStation;
+		temp.canRaid = ongoingBattle || hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation;
+		temp.canBombard = (hasOtherButInsignificant || (hasNonStation && !otherWantsToFight) || !hasNonStation) && !hasStation;
 		//temp.canSurpriseRaid = Misc.getDaysSinceLastRaided(market) < SURPRISE_RAID_TIMEOUT;
 		
 		boolean couldRaidIfNotDebug = temp.canRaid;
@@ -2508,9 +2528,11 @@ public class MarketCMD extends BaseCommandPlugin {
 					curr.getId());
 		}
 	
-		int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
-		atrocities++;
-		Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
+		if (temp.bombardType == BombardType.SATURATION) {
+			int atrocities = (int) Global.getSector().getCharacterData().getMemoryWithoutUpdate().getFloat(MemFlags.PLAYER_ATROCITIES);
+			atrocities++;
+			Global.getSector().getCharacterData().getMemoryWithoutUpdate().set(MemFlags.PLAYER_ATROCITIES, atrocities);
+		}
 		
 		
 		int stabilityPenalty = getTacticalBombardmentStabilityPenalty();
@@ -2726,7 +2748,7 @@ public class MarketCMD extends BaseCommandPlugin {
 			AddRemoveCommodity.addCommodityLossText(Commodities.CREW, crewLoss, text);
 		}
 		if (marineLoss <= marines) {
-			playerFleet.getCargo().removeCrew(marineLoss);
+			playerFleet.getCargo().removeMarines(marineLoss);
 			AddRemoveCommodity.addCommodityLossText(Commodities.MARINES, marineLoss, text);
 		}
 		

@@ -89,7 +89,7 @@ public class NavBuoyEffect extends BaseBattleObjectiveEffect {
 		return String.format(
 				"+%d%% top speed\n" +
 				"%d%% base total maximum\n" + 
-				"can be improved by skills\n\n" +
+				//"can be improved by skills\n\n" +
 				"+%d bonus deployment points\n" + 
 				"up to a maximum of " + maxPoints + " points",
 				(int)CoordinatedManeuversScript.PER_BUOY,

@@ -128,7 +128,7 @@ public class BaseCustomBounty extends HubMissionWithBarEvent implements FleetEve
 		return result;
 	}
 	
-	protected CustomBountyCreator pickCreator(int difficulty) {
+	protected CustomBountyCreator pickCreator(int difficulty, DifficultyChoice choice) {
 		//if (true) return new CBRemnantPlus();
 		//if (true) return new CBMercUW();
 		if (creatorOverride != null) {
@@ -147,6 +147,16 @@ public class BaseCustomBounty extends HubMissionWithBarEvent implements FleetEve
 		for (CustomBountyCreator curr : getCreators()) {
 			if (curr.getMinDifficulty() > difficulty) continue;
 			if (curr.getMaxDifficulty() < difficulty) continue;
+			
+			
+			if (choice == DifficultyChoice.HIGH) {
+				int threshold = CBStats.getThresholdNotHigh(getClass());
+				if (difficulty >= threshold) continue;
+			}
+			if (choice == DifficultyChoice.NORMAL) {
+				int threshold = CBStats.getThresholdNotNormal(getClass());
+				if (difficulty >= threshold) continue;
+			}
 			
 			float probToSkip = (1.1f - quality) * (float) curr.getMinDifficulty() / maxDiff;
 			if (rollProbability(probToSkip)) continue;
@@ -214,21 +224,21 @@ public class BaseCustomBounty extends HubMissionWithBarEvent implements FleetEve
 		
 		
 		int dLow = pickDifficulty(DifficultyChoice.LOW);
-		creatorLow = pickCreator(dLow);
+		creatorLow = pickCreator(dLow, DifficultyChoice.LOW);
 		if (creatorLow != null) {
 			dataLow = creatorLow.createBounty(createdAt, this, dLow, Stage.BOUNTY);
 		}
 		if (dataLow == null || dataLow.fleet == null) return false;
 		
 		int dNormal = pickDifficulty(DifficultyChoice.NORMAL);
-		creatorNormal = pickCreator(dNormal);
+		creatorNormal = pickCreator(dNormal, DifficultyChoice.NORMAL);
 		if (creatorNormal != null) {
 			dataNormal = creatorNormal.createBounty(createdAt, this, dNormal, Stage.BOUNTY);
 		}
 		if (dataNormal == null || dataNormal.fleet == null) return false;
 		
 		int dHigh = pickDifficulty(DifficultyChoice.HIGH);
-		creatorHigh = pickCreator(dHigh);
+		creatorHigh = pickCreator(dHigh, DifficultyChoice.HIGH);
 		if (creatorHigh != null) {
 			dataHigh = creatorHigh.createBounty(createdAt, this, dHigh, Stage.BOUNTY);
 		}
@@ -366,7 +376,7 @@ public class BaseCustomBounty extends HubMissionWithBarEvent implements FleetEve
 		}
 		
 		for (Abortable curr : abort) {
-			curr.abort(false);
+			curr.abort(this, false);
 		}
 		
 		creatorLow = creatorNormal = creatorHigh = null;

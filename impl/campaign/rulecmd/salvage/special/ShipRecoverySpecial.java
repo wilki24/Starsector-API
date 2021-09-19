@@ -251,11 +251,11 @@ public class ShipRecoverySpecial extends BaseSalvageSpecial {
 			if (members.size() == 1) {
 				addText("\"Commander, looks like we might be able to pull this off, though I'll say you're not going to " +
 						"find what I'm going to do in any manual. And it wouldn't pass any inspection, but then again " +
-						"we're not in the Hegemonly fleet. It'll fly, though.");
+						"we're not in the Hegemony fleet. It'll fly, though.");
 			} else {
 				addText("\"Commander, looks like we might be able to pull this off, though I'll say you're not going to " +
 						"find what I'm going to do in any manual. And it wouldn't pass any inspection, but then again " +
-						"we're not in the Hegemonly fleet. These ships can be made to fly again, though.");
+						"we're not in the Hegemony fleet. These ships can be made to fly again, though.");
 			}
 			return;
 		}
@@ -625,7 +625,12 @@ public class ShipRecoverySpecial extends BaseSalvageSpecial {
 				
 				new ShowDefaultVisual().execute(null, dialog, Misc.tokenize(""), memoryMap);
 				
-				addExtraSalvageFromUnrecoveredShips();
+				// only get extra salvage when it's not story-point recovery
+				// since unless the story point is spent and the ship is recovered
+				// it's not in a "recoverable" state an should grant no bonus stuff when salvaged
+				if (!isStoryPointRecovery()) {
+					addExtraSalvageFromUnrecoveredShips();
+				}
 				setDone(true);
 				setEndWithContinue(false);
 				setShowAgain(true);
@@ -637,15 +642,18 @@ public class ShipRecoverySpecial extends BaseSalvageSpecial {
 			wreck |= entity.hasTag(Tags.WRECK);
 			
 			if (wreck) {
-				ExtraSalvage es = BaseSalvageSpecial.getExtraSalvage(entity);
-				if (es != null && !es.cargo.isEmpty()) {
+				//ExtraSalvage es = BaseSalvageSpecial.getExtraSalvage(entity);
+				//if (es != null && !es.cargo.isEmpty()) {
+				CargoAPI extra = BaseSalvageSpecial.getCombinedExtraSalvage(entity);
+				if (extra != null && !extra.isEmpty()) {
 					addText("Your crews find some securely stowed cargo during the recovery operation.");
 					
-					es.cargo.sort();
-					playerFleet.getCargo().addAll(es.cargo);
-					for (CargoStackAPI stack : es.cargo.getStacksCopy()) {
+					extra.sort();
+					playerFleet.getCargo().addAll(extra);
+					for (CargoStackAPI stack : extra.getStacksCopy()) {
 						AddRemoveCommodity.addStackGainText(stack, text);
 					}
+					clearExtraSalvage(entity);
 					//addText("The recovery operation is finished without any further surprises.");
 				}
 				

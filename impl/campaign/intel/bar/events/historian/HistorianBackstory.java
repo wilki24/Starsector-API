@@ -153,7 +153,7 @@ public class HistorianBackstory {
 				HistorianData hd = HistorianData.getInstance();
 				return "\"The Domain split key industries into separate worlds, and yes, with redundancies - set well apart from one another. " +
 						"If one world which produces hyperdrives tried to leverage their specialization against the Domain, well, what good are they " +
-						"without raw materials? Or AM fuel? Or, indeed, the basic necessities of life and access to markets?\"" +
+						"without raw materials? Or AM fuel? Or, indeed, the basic necessities of life and access to markets?\"\n\n" +
 						"\"How can one rebel when the Domain need only control the local Gate to lay siege? Which one world could possibly stand against the " +
 						"entire Domain?\"" + hd.getUCHeOrShe() + " gives a grim smirk. \"Now we're stuck here, besieged by the Domain. There's no one " + 
 						"to accept our surrender but some dead Gates.\"";
@@ -209,7 +209,7 @@ public class HistorianBackstory {
 				HistorianData hd = HistorianData.getInstance();
 				return "\"How we long for some incidental recording of even one of Ludd's speeches or acts. Incredible, is it not, how all evidence seems " +
 						"to have disappeared? This, hrm, 'miracle' is of course a point of faith among followers of the Church of Galactic Redemption.\"\n\n" + 
-						hd.getUCHeOrShe() + " raises an eyebrow at you. \"And, officially, a point of policy for the Hegemony, which seeks to appease these faithful. " +
+						hd.getUCHeOrShe() + " raises an eyebrow at you. \"And, officially, a point of policy for the Hegemony, which seeks to appease these faithful.\" " +
 						hd.getUCHeOrShe() + " furrows " + hd.getHisOrHer() + " brow in frustration, \"As a historian, of course, this vexes me to no end. " +
 						"History as experienced by the common person may be a story society tells itself, and distorted as such. Even still! It must be grounded " +
 						"in facts!\"\n\n" + 
@@ -229,7 +229,7 @@ public class HistorianBackstory {
 						"Take for instance the quantity of food and supplies that disappear en route on trade routes that skim the " +
 						"edges of the Core Worlds. A simple statistical sampling suggests that a significant percent of all economic activity in the " +
 						"Sector is 'off the books', as they say, and a significant portion of that goes straight to what are called 'pirates' and " +
-						"so-called 'decivilized' demographics.\"\n\n +" +
+						"so-called 'decivilized' demographics.\"\n\n " +
 						hd.getUCHeOrShe() + " shakes " + hd.getHisOrHer() + " head, smiling. \"Simply astounding.\"";
 			}
 		});

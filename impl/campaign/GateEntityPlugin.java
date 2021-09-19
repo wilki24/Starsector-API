@@ -73,7 +73,11 @@ public class GateEntityPlugin extends BaseCustomEntityPlugin {
 	}
 	
 	public static boolean areGatesActive() {
-		return Global.getSector().getMemoryWithoutUpdate().getBoolean(GATES_ACTIVE);
+		if (Global.getSector().getMemoryWithoutUpdate().getBoolean(GATES_ACTIVE)) {
+			return true;
+		}
+		CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+		return cargo.getQuantity(CargoItemType.SPECIAL, new SpecialItemData(Items.JANUS, null)) > 0;
 	}
 	
 	public static boolean canUseGates() {

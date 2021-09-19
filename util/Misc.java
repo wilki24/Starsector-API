@@ -71,6 +71,8 @@ import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.SubmarketPlugin;
 import com.fs.starfarer.api.campaign.SubmarketPlugin.OnClickAction;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.ai.CampaignFleetAIAPI.EncounterOption;
+import com.fs.starfarer.api.campaign.ai.FleetAIFlags;
 import com.fs.starfarer.api.campaign.ai.ModularFleetAIAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
 import com.fs.starfarer.api.campaign.econ.AbandonMarketPlugin;
@@ -3674,6 +3676,7 @@ public class Misc {
 	}
 	
 	public static SubmarketPlugin getStorage(MarketAPI market) {
+		if (market == null) return null;
 		SubmarketAPI submarket = market.getSubmarket(Submarkets.SUBMARKET_STORAGE);
 		if (submarket == null) return null;
 		return (StoragePlugin) submarket.getPlugin();
@@ -4959,9 +4962,13 @@ public class Misc {
 	public static float SNEAK_BURN_MULT = Global.getSettings().getFloat("sneakBurnMult");
 	
 	public static int getGoSlowBurnLevel(CampaignFleetAPI fleet) {
+//		if (fleet.isPlayerFleet()) {
+//			System.out.println("fewfewfe");
+//		}
 		float bonus = fleet.getStats().getDynamic().getMod(Stats.MOVE_SLOW_SPEED_BONUS_MOD).computeEffective(0);
 		//int burn = (int)Math.round(MAX_SNEAK_BURN_LEVEL + bonus);
-		int burn = (int)Math.round(fleet.getFleetData().getMinBurnLevelUnmodified() * SNEAK_BURN_MULT);
+		//int burn = (int)Math.round(fleet.getFleetData().getMinBurnLevelUnmodified() * SNEAK_BURN_MULT);
+		int burn = (int)Math.round(fleet.getFleetData().getMinBurnLevel() * SNEAK_BURN_MULT);
 		burn += bonus;
 		//burn = (int) Math.min(burn, fleet.getFleetData().getBurnLevel() - 1);
 		return burn;
@@ -5382,9 +5389,19 @@ public class Misc {
 	}
 	
 	public static boolean isAvoidingPlayerHalfheartedly(CampaignFleetAPI fleet) {
+		if (fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_NEVER_AVOID_PLAYER_SLOWLY)) {
+			return false;
+		}
 		CampaignFleetAPI player = Global.getSector().getPlayerFleet();
 		boolean avoidingPlayer = fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_AVOID_PLAYER_SLOWLY);
 		if (avoidingPlayer && !fleet.isHostileTo(player)) return true;
+		
+		CampaignFleetAPI fleeingFrom = fleet.getMemoryWithoutUpdate().getFleet(FleetAIFlags.NEAREST_FLEEING_FROM);
+		if (fleeingFrom != null && fleeingFrom.isPlayerFleet()) {
+			if (Misc.shouldNotWantRunFromPlayerEvenIfWeaker(fleet) && fleet.isHostileTo(player)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -5506,6 +5523,79 @@ public class Misc {
 	}
 	public static boolean isStoryCritical(MemoryAPI memory) {
 		return memory.getBoolean(MemFlags.STORY_CRITICAL);
+	}
+	
+	
+	/**
+	 * Whether it prevents salvage, surveying, etc. But NOT things that require only being
+	 * seen to ruin them, such as SpySat deployments.
+	 * @param fleet
+	 * @return
+	 */
+	public static boolean isInsignificant(CampaignFleetAPI fleet) {
+		boolean recentlyBeaten = fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RECENTLY_DEFEATED_BY_PLAYER);
+		if (recentlyBeaten) return true;
+		
+		CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
+		if (pf == null) return true; // ??
+		if (fleet.getAI() != null) {
+			EncounterOption opt = fleet.getAI().pickEncounterOption(null, pf);
+			if (opt == EncounterOption.DISENGAGE || opt == EncounterOption.HOLD_VS_STRONGER) {
+				return true;
+			}
+			if (opt == EncounterOption.ENGAGE) {
+				return false;
+			}
+		}
+		int pfCount = pf.getFleetSizeCount();
+		int otherCount = fleet.getFleetSizeCount();
+		
+		return otherCount <= pfCount / 4;
+	}
+	
+	/**
+	 * Mainly for avoiding stuff like "pirate fleet with 4 rustbuckets will run away from the player's
+	 * 4 regular-quality frigates". Fleets that this evaluates to true for will avoid the player slowly.
+	 * @param fleet
+	 * @return
+	 */
+	public static boolean shouldNotWantRunFromPlayerEvenIfWeaker(CampaignFleetAPI fleet) {
+		boolean recentlyBeaten = fleet.getMemoryWithoutUpdate().getBoolean(MemFlags.MEMORY_KEY_RECENTLY_DEFEATED_BY_PLAYER);
+		if (recentlyBeaten) return true;
+		if (fleet.getFleetData() == null) return false;
+		
+		float count = 0;
+		for (FleetMemberAPI member : fleet.getFleetData().getMembersListCopy()) {
+			if (!member.isCivilian() && member.getHullSpec() != null) {
+				switch (member.getHullSpec().getHullSize()) {
+				case CAPITAL_SHIP: count += 4; break;
+				case CRUISER: count += 3; break;
+				case DESTROYER: count += 2; break;
+				case FRIGATE: count += 1; break;
+				}
+			}
+		}
+		
+		CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
+		float pfCount = 0;
+		for (FleetMemberAPI member : pf.getFleetData().getMembersListCopy()) {
+			if (!member.isCivilian() && member.getHullSpec() != null) {
+				switch (member.getHullSpec().getHullSize()) {
+				case CAPITAL_SHIP: pfCount += 4; break;
+				case CRUISER: pfCount += 3; break;
+				case DESTROYER: pfCount += 2; break;
+				case FRIGATE: pfCount += 1; break;
+				}
+			}
+		}
+		
+		if (count > pfCount * 0.67f) {
+			return true;
+		}
+		
+		if (isInsignificant(fleet) && count <= 6) return true;
+		
+		return false;
 	}
 }
 

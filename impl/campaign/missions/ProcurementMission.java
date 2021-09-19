@@ -108,6 +108,9 @@ public class ProcurementMission extends HubMissionWithBarEvent {
 		if (canOfferRemote && rollProbability(PROB_REMOTE)) {
 			variation = Variation.REMOTE;
 		}
+		if (CheapCommodityMission.SAME_CONTACT_DEBUG) {
+			variation = Variation.REMOTE;
+		}
 
 		CommodityOnMarketAPI com = null;
 		if (variation == Variation.LOCAL) {
@@ -120,7 +123,7 @@ public class ProcurementMission extends HubMissionWithBarEvent {
 				requireCommodityDemandAtLeast(1);
 			}
 			requireCommoditySurplusAtMost(0);
-			preferCommodityDeficitAtLeast(1);
+			requireCommodityDeficitAtLeast(1);
 			if (preferExpensive) {
 				preferCommodityTags(ReqMode.ALL, Commodities.TAG_EXPENSIVE);
 			}
@@ -132,8 +135,13 @@ public class ProcurementMission extends HubMissionWithBarEvent {
 		}
 		
 		if (variation == Variation.REMOTE) {
-			requireMarketIsNot(market);
+			if (CheapCommodityMission.SAME_CONTACT_DEBUG) {
+				requireMarketIs("jangala");
+			} else {
+				requireMarketIsNot(market);
+			}
 			requireMarketFaction(market.getFactionId());
+			requireMarketNotHidden();
 			requireCommodityIsNotPersonnel();
 			if (person.hasTag(Tags.CONTACT_UNDERWORLD) && rollProbability(PROB_ILLEGAL_IF_UNDERWORLD)) {
 				preferCommodityIllegal();
@@ -142,7 +150,7 @@ public class ProcurementMission extends HubMissionWithBarEvent {
 				requireCommodityDemandAtLeast(1);
 			}
 			requireCommoditySurplusAtMost(0);
-			preferCommodityDeficitAtLeast(1);
+			requireCommodityDeficitAtLeast(1);
 			if (preferExpensive) {
 				preferCommodityTags(ReqMode.ALL, Commodities.TAG_EXPENSIVE);
 			}
@@ -225,6 +233,7 @@ public class ProcurementMission extends HubMissionWithBarEvent {
 		if (variation == Variation.REMOTE) {
 			set("$proCom_personName", deliveryContact.getNameString());
 			set("$proCom_personPost", deliveryContact.getPost().toLowerCase());
+			set("$proCom_PersonPost", Misc.ucFirst(deliveryContact.getPost()));
 			set("$proCom_marketName", deliveryMarket.getName());
 			set("$proCom_marketOnOrAt", deliveryMarket.getOnOrAt());
 			set("$proCom_dist", getDistanceLY(deliveryMarket));

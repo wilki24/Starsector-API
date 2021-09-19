@@ -59,6 +59,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.contacts.ContactIntel;
+import com.fs.starfarer.api.impl.campaign.missions.CheapCommodityMission;
 import com.fs.starfarer.api.impl.campaign.missions.hub.MissionTrigger.TriggerAction;
 import com.fs.starfarer.api.impl.campaign.missions.hub.MissionTrigger.TriggerActionContext;
 import com.fs.starfarer.api.impl.campaign.plog.PlaythroughLog;
@@ -100,6 +101,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 	
 	public static float GLOBAL_MISSION_REWARD_MULT = 1f;
 	
+	public static int EXTRA_REWARD_PER_MARINE = 50;
 	
 	public static enum CreditReward {
 		VERY_LOW(20000, 25000, 2000),
@@ -474,7 +476,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 	}
 	
 	public static interface Abortable {
-		void abort(boolean missionOver);
+		void abort(HubMission mission, boolean missionOver);
 	}
 	
 	public static class VariableSet implements Abortable {
@@ -487,7 +489,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			this.removeOnMissionOver = removeOnMissionOver;
 		}
 
-		public void abort(boolean missionOver) {
+		public void abort(HubMission mission, boolean missionOver) {
 			if (!removeOnMissionOver && missionOver) return;
 			memory.unset(key);
 		}
@@ -500,7 +502,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			this.memory = memory;
 			this.reason = reason;
 		}
-		public void abort(boolean missionOver) {
+		public void abort(HubMission mission, boolean missionOver) {
 			Misc.makeUnimportant(memory, reason);
 		}
 	}
@@ -514,7 +516,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			this.trigger = trigger;
 			this.permanent = permanent;
 		}
-		public void abort(boolean missionOver) {
+		public void abort(HubMission mission, boolean missionOver) {
 			if (!(permanent && missionOver)) {
 				Misc.removeDefeatTrigger(fleet, trigger);
 			}
@@ -528,7 +530,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			this.entity = entity;
 		}
 
-		public void abort(boolean missionOver) {
+		public void abort(HubMission mission, boolean missionOver) {
 			if (missionOver) {
 				if (!entity.hasTag(REMOVE_ON_MISSION_OVER)) return;
 				if (entity.hasTag(Tags.FADING_OUT_AND_EXPIRING)) return;
@@ -550,14 +552,40 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			this.wasOnlyAddedToCommDirectory = wasOnlyAddedToCommDirectory;
 		}
 
-		public void abort(boolean missionOver) {
+		public void abort(HubMission mission, boolean missionOver) {
 			if (missionOver && !person.hasTag(REMOVE_ON_MISSION_OVER)) return;
+			
+			if (mission instanceof BaseHubMission) {
+				BaseHubMission bhm = (BaseHubMission) mission;
+				if (Misc.setFlagWithReason(person.getMemoryWithoutUpdate(), 
+						"$requiredForMissions", bhm.getReason(), false, -1f)) {
+					return;
+				}
+			}
 			
 			if (!wasOnlyAddedToCommDirectory) {
 				if (market != null) market.removePerson(person);
 				Global.getSector().getImportantPeople().removePerson(person);
 			}
 			if (market != null) market.getCommDirectory().removePerson(person);
+		}
+	}
+	
+	public static class PersonMadeRequired implements Abortable {
+		public PersonAPI person;
+		
+		public PersonMadeRequired(PersonAPI person) {
+			this.person = person;
+		}
+		
+		public void abort(HubMission mission, boolean missionOver) {
+			if (mission instanceof BaseHubMission) {
+				BaseHubMission bhm = (BaseHubMission) mission;
+				if (Misc.setFlagWithReason(person.getMemoryWithoutUpdate(), 
+						"$requiredForMissions", bhm.getReason(), false, -1f)) {
+					return;
+				}
+			}
 		}
 	}
 	
@@ -820,7 +848,7 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 	public void abort() {
 		boolean missionWasAccepted = currentStage != null;
 		for (Abortable curr : changes) {
-			curr.abort(missionWasAccepted);
+			curr.abort(this, missionWasAccepted);
 		}
 		changes.clear();
 		
@@ -1771,14 +1799,17 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 		setCreditReward(reward.min, reward.max);
 	}
 	public void setCreditReward(CreditReward reward, int marketSize) {
-		setCreditReward(reward.min / 3 + reward.perMarketSize * Math.max(0, marketSize - 3), 
-					    reward.max / 3 + reward.perMarketSize * Math.max(0, marketSize - 3));
+		setCreditReward(reward.min / 2 + reward.perMarketSize * Math.max(0, marketSize - 3), 
+					    reward.max / 2 + reward.perMarketSize * Math.max(0, marketSize - 3));
 	}
 	
 	public void setCreditRewardWithBonus(CreditReward reward, int bonus) {
 		setCreditReward(reward.min + bonus, reward.max + bonus);
 	}
 	
+	public int getRewardBonusForMarines(int marines) {
+		return marines * EXTRA_REWARD_PER_MARINE;
+	}
 	
 //	public void setXPReward(XPReward reward) {
 //		float f = reward.getFractionOfLevel();
@@ -2608,6 +2639,8 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			added.entity.addTag(REMOVE_ON_MISSION_OVER);
 		}
 		
+		added.entity.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
+		
 		changes.add(new EntityAdded(added.entity));
 		return added.entity;
 	}
@@ -2683,6 +2716,11 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 	
 	
 	protected PersonAPI findOrCreateTrader(String factionId, MarketAPI market, boolean cleanUpOnMissionOverIfWasNewPerson) {
+		if (CheapCommodityMission.SAME_CONTACT_DEBUG) {
+			return findOrCreatePerson(factionId, market, cleanUpOnMissionOverIfWasNewPerson,
+				 	Ranks.CITIZEN, 
+					Ranks.POST_MERCHANT);	
+		}
 		return findOrCreatePerson(factionId, market, cleanUpOnMissionOverIfWasNewPerson,
 				 	Ranks.CITIZEN, 
 					Ranks.POST_MERCHANT,
@@ -2750,17 +2788,32 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 			addedToComms = true;
 		}
 		
+		boolean willBeRemoved = false;
 		if (createdNewPerson || addedToComms) {
 			if (cleanUpOnMissionOverIfWasNewPerson) {
 				person.addTag(REMOVE_ON_MISSION_OVER);
 			}
 			PersonAdded added = new PersonAdded(market, person, !createdNewPerson); 
 			changes.add(added);
+			willBeRemoved = true;
+		}
+		
+		makePersonRequired(person);
+		if (!willBeRemoved && person.hasTag(REMOVE_ON_MISSION_OVER)) {
+			PersonAdded added = new PersonAdded(market, person, false);
+			changes.add(added);
 		}
 		
 		person.setMarket(market);
 		
 		return person;
+	}
+	
+	public void makePersonRequired(PersonAPI person) {
+		PersonMadeRequired req = new PersonMadeRequired(person);
+		// always add at the start so the flag is unset and the person can be deleted by the PersonAdded change
+		changes.add(0, req); // always add at the start so the flag is unset and the person can be deleted by the PersonAdded change
+		Misc.setFlagWithReason(person.getMemoryWithoutUpdate(), "$requiredForMissions", getReason(), true, -1f);
 	}
 	
 	protected void ensurePersonIsInCommDirectory(MarketAPI market, PersonAPI person) {
@@ -2926,6 +2979,8 @@ public abstract class BaseHubMission extends BaseIntelPlugin implements HubMissi
 		}
 		PersonAdded added = new PersonAdded(market, person, false); 
 		changes.add(added);
+		
+		makePersonRequired(person);
 		
 		personOverride = person;
 		

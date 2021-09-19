@@ -1201,6 +1201,7 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 		case SINGLE:
 		case BINARY_FAR:
 		case TRINARY_2FAR:
+			if (system.getStar() == null) return 0; // alpha site
 			return system.getStar().getRadius();
 		case BINARY_CLOSE:
 		case TRINARY_1CLOSE_1FAR:

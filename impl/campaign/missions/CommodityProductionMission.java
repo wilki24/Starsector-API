@@ -145,7 +145,7 @@ public class CommodityProductionMission extends HubMissionWithBarEvent implement
 		
 		MarketAPI market = getPerson().getMarket();
 		if (market == null) return false;
-		
+		if (market.isPlayerOwned()) return false;
 		
 		WeightedRandomPicker<String> commoditiesPlayerIsNotProducing = new WeightedRandomPicker<String>(genRandom);
 		WeightedRandomPicker<String> commoditiesPlayerIsProducing = new WeightedRandomPicker<String>(genRandom);
@@ -270,6 +270,8 @@ public class CommodityProductionMission extends HubMissionWithBarEvent implement
 				info.addPara("You are not currently meeting the terms of the contract.", 
 							 Misc.getNegativeHighlightColor(), opad);
 			}
+		} else if (currentStage == Stage.COMPLETED) {
+			info.addPara("The contract is completed.", opad);
 		}
 	}
 
@@ -375,7 +377,7 @@ public class CommodityProductionMission extends HubMissionWithBarEvent implement
 
 	public void reportEconomyMonthEnd() {
 		monthsRemaining--;
-		monthsRemaining = 0;
+		//monthsRemaining = 0;
 		if (monthsRemaining <= 0) {
 			Global.getSector().getMemoryWithoutUpdate().set(getCompletionFlag(), true);
 		}

@@ -26,5 +26,7 @@ public interface PortsideBarEvent {
 
 	String getBarEventId();
 
+	boolean isAlwaysShow();
+
 
 }

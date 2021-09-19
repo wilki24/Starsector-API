@@ -65,7 +65,12 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 
 		// doesn't work for consecutive engagements; haven't investigated why
 		//Random random = Misc.getRandom(Misc.getNameBasedSeed(otherFleet), 23);
-		Random random = Misc.random;
+		
+		Random random = Misc.getRandom(Misc.getSalvageSeed(otherFleet) *
+				(long)otherFleet.getFleetData().getNumMembers(), 23);
+		//System.out.println("RNG: " + random.nextLong());
+		//random = new Random(1213123L);
+		//Random random = Misc.random;
 		
 		escape = playerGoal == FleetGoal.ESCAPE || enemyGoal == FleetGoal.ESCAPE;
 		
@@ -449,7 +454,7 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 				"graphics/backgrounds/background3.jpg",
 				"graphics/backgrounds/background4.jpg"
 		};
-		String pick = bgs[Math.min(bgs.length - 1, (int)(random.nextFloat() * bgs.length))];
+		String pick = bgs[Math.min(bgs.length - 1, (int)(random.nextDouble() * bgs.length))];
 		loader.setBackgroundSpriteName(pick);
 	}
 
@@ -468,7 +473,7 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 				//COMM,
 				//COMM,
 		}));
-		
+
 		if (num == 2) { // minimum is 3 now, so this shouldn't happen
 			objs = new ArrayList<String>(Arrays.asList(new String [] {
 					SENSOR,
@@ -491,13 +496,13 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 				addObjectiveAt(0.25f, 0.5f, 1f, 1f, COMM, random);
 			} else {
 				if (random.nextFloat() < 0.5f) {
-					addObjectiveAt(0.22f, 0.6f, 1f, 1f, random);
+					addObjectiveAt(0.22f, 0.7f, 1f, 1f, random);
 					addObjectiveAt(0.5f, 0.5f, 1f, 1f, COMM, random);
-					addObjectiveAt(0.78f, 0.4f, 1f, 1f, random);
+					addObjectiveAt(0.78f, 0.3f, 1f, 1f, random);
 				} else {
-					addObjectiveAt(0.22f, 0.4f, 1f, 1f, random);
+					addObjectiveAt(0.22f, 0.3f, 1f, 1f, random);
 					addObjectiveAt(0.5f, 0.5f, 1f, 1f, COMM, random);
-					addObjectiveAt(0.78f, 0.6f, 1f, 1f, random);
+					addObjectiveAt(0.78f, 0.7f, 1f, 1f, random);
 				}
 			}
 		} else if (num == 4) {
@@ -517,16 +522,16 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 			} else {
 				if (random.nextFloat() < 0.5f) {
 					String [] maybeRelays = pickCommRelays(1, 2, true, false, true, false, random);
-					addObjectiveAt(0.2f, 0.5f, 1f, 0f, maybeRelays[0], random);
+					addObjectiveAt(0.25f, 0.25f, 1f, 0f, maybeRelays[0], random);
 					addObjectiveAt(0.4f, 0.6f, 1f, 0f, maybeRelays[1], random);
-					addObjectiveAt(0.6f, 0.5f, 1f, 0f, maybeRelays[2], random);
-					addObjectiveAt(0.8f, 0.4f, 1f, 0f, maybeRelays[3], random);
+					addObjectiveAt(0.6f, 0.4f, 1f, 0f, maybeRelays[2], random);
+					addObjectiveAt(0.75f, 0.75f, 1f, 0f, maybeRelays[3], random);
 				} else {
 					String [] maybeRelays = pickCommRelays(1, 2, false, true, false, true, random);
-					addObjectiveAt(0.2f, 0.4f, 1f, 0f, maybeRelays[0], random);
-					addObjectiveAt(0.4f, 0.5f, 1f, 0f, maybeRelays[1], random);
+					addObjectiveAt(0.25f, 0.75f, 1f, 0f, maybeRelays[0], random);
+					addObjectiveAt(0.4f, 0.4f, 1f, 0f, maybeRelays[1], random);
 					addObjectiveAt(0.6f, 0.6f, 1f, 0f, maybeRelays[2], random);
-					addObjectiveAt(0.8f, 0.5f, 1f, 0f, maybeRelays[3], random);
+					addObjectiveAt(0.75f, 0.25f, 1f, 0f, maybeRelays[3], random);
 				}
 			}
 		}
@@ -535,7 +540,7 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 	protected String [] pickCommRelays(int min, int max, boolean comm1, boolean comm2, boolean comm3, boolean comm4, Random random) {
 		String [] result = new String [4];
 		
-		WeightedRandomPicker<Integer> picker = new WeightedRandomPicker<Integer>();
+		WeightedRandomPicker<Integer> picker = new WeightedRandomPicker<Integer>(random);
 		if (comm1) picker.add(0);
 		if (comm2) picker.add(1);
 		if (comm3) picker.add(2);
@@ -615,7 +620,7 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 		if (type == null) {
 			type = pickAny(random);
 			if (objs != null && objs.size() > 0) {
-				int index = (int) (random.nextFloat() * objs.size());
+				int index = (int) (random.nextDouble() * objs.size());
 				type = objs.remove(index); 
 			}
 		}
@@ -629,8 +634,11 @@ public class BattleCreationPluginImpl implements BattleCreationPlugin {
 		x = ((int) x / 1000) * 1000f;
 		y = ((int) y / 1000) * 1000f;
 		
-		float offsetX = Math.round((random.nextFloat() - 0.5f) * xOff * 2f) * 1000f;
-		float offsetY = Math.round((random.nextFloat() - 0.5f) * yOff * 2f) * 1000f;
+		float offsetX = Math.round((random.nextFloat() - 0.5f) * xOff * 1f) * 1000f;
+		float offsetY = Math.round((random.nextFloat() - 0.5f) * yOff * 1f) * 1000f;
+		
+//		offsetX = 0;
+//		offsetY = 0;
 		
 		float xDir = (float) Math.signum(offsetX);
 		float yDir = (float) Math.signum(offsetY);

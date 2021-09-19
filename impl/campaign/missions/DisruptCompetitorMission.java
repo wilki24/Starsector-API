@@ -90,6 +90,7 @@ public class DisruptCompetitorMission extends HubMissionWithBarEvent {
 		}
 		requireMarketIsNot(createdAt);
 		requireMarketNotHidden();
+		requireMarketFactionNotPlayer();
 		requireMarketNotInHyperspace();
 		preferMarketSizeAtLeast(minMarketSize);
 		preferMarketSizeAtMost(maxMarketSize);
@@ -116,7 +117,10 @@ public class DisruptCompetitorMission extends HubMissionWithBarEvent {
 		
 		//int sizeModifier = market.getSize() * 10000;
 		//setCreditReward(10000 + sizeModifier, 30000 + sizeModifier);
-		setCreditReward(CreditReward.AVERAGE, market.getSize());
+		//setCreditReward(CreditReward.AVERAGE, market.getSize());
+		
+		int bonus = getRewardBonusForMarines(getMarinesRequiredForCustomObjective(market, RAID_DANGER));
+		setCreditRewardWithBonus(CreditReward.AVERAGE, bonus);
 		
 		return true;
 	}

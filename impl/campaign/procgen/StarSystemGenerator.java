@@ -2247,9 +2247,9 @@ public class StarSystemGenerator {
 
 	
 	public static Color getColor(Color min, Color max) {
-		Color color = new Color((int) (min.getRed() + (max.getRed() - min.getRed()) * random.nextFloat()),
-				(int) (min.getGreen() + (max.getGreen() - min.getGreen()) * random.nextFloat()),
-				(int) (min.getBlue() + (max.getBlue() - min.getBlue()) * random.nextFloat()),
+		Color color = new Color((int) (min.getRed() + (max.getRed() - min.getRed()) * random.nextDouble()),
+				(int) (min.getGreen() + (max.getGreen() - min.getGreen()) * random.nextDouble()),
+				(int) (min.getBlue() + (max.getBlue() - min.getBlue()) * random.nextDouble()),
 				255);
 		
 		return color;

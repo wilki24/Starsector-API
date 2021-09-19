@@ -110,7 +110,7 @@ public class CBMerc extends BaseCustomBountyCreator {
 			mission.triggerFleetAddCommanderSkill(Skills.ELECTRONIC_WARFARE, 1);
 			mission.triggerFleetAddCommanderSkill(Skills.FLUX_REGULATION, 1);
 			mission.triggerFleetAddCommanderSkill(Skills.WEAPON_DRILLS, 1);
-			mission.triggerSetFleetOfficers(OfficerNum.ALL_SHIPS, OfficerQuality.UNUSUALLY_HIGH);
+			mission.triggerSetFleetOfficers(OfficerNum.MORE, OfficerQuality.UNUSUALLY_HIGH);
 		} else {
 			if (difficulty <= 6) {
 				mission.triggerCreateFleet(FleetSize.MEDIUM, FleetQuality.VERY_HIGH, 
@@ -146,7 +146,7 @@ public class CBMerc extends BaseCustomBountyCreator {
 			}
 			
 			mission.triggerSetFleetDoctrineOther(3, 3);
-			mission.triggerSetFleetOfficers(OfficerNum.ALL_SHIPS, OfficerQuality.HIGHER);
+			mission.triggerSetFleetOfficers(OfficerNum.MORE, OfficerQuality.HIGHER);
 		}
 		
 		

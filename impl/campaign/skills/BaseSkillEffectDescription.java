@@ -32,7 +32,7 @@ public class BaseSkillEffectDescription implements CustomSkillDescription {
 
 	public static float TOOLTIP_WIDTH = 450;
 	
-	public static float FIGHTER_BAYS_THRESHOLD = 6;
+	public static float FIGHTER_BAYS_THRESHOLD = 8;
 	public static float OP_THRESHOLD = 1000;
 	public static float OP_LOW_THRESHOLD = 500;
 	public static float OP_ALL_LOW_THRESHOLD = 500;
@@ -46,8 +46,8 @@ public class BaseSkillEffectDescription implements CustomSkillDescription {
 	static {
 		if (USE_RECOVERY_COST) {
 			// working off 60% of the default battle size of 300 for these, which is 180
-			OP_THRESHOLD = 180;
-			OP_LOW_THRESHOLD = 90;
+			OP_THRESHOLD = 240;
+			OP_LOW_THRESHOLD = 120;
 			OP_ALL_LOW_THRESHOLD = 60;
 //			OP_THRESHOLD = 150;
 //			OP_LOW_THRESHOLD = 75;

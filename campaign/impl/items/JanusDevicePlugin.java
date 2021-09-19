@@ -72,6 +72,9 @@ public class JanusDevicePlugin extends BaseSpecialItemPlugin {
 
 	@Override
 	public void performRightClickAction() {
+		// should be already set but, failsafe
+		Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.GATES_ACTIVE, true);
+		
 		Global.getSector().getMemoryWithoutUpdate().set(GateEntityPlugin.PLAYER_CAN_USE_GATES, true);
 		Global.getSoundPlayer().playUISound(getSpec().getSoundId(), 1f, 1f);
 		Global.getSector().getCampaignUI().getMessageDisplay().addMessage(

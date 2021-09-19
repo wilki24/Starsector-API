@@ -85,10 +85,10 @@ public class People {
 			person.getStats().setSkillLevel(Skills.BULK_TRANSPORT, 1);
 			person.getStats().setSkillLevel(Skills.NAVIGATION, 1);
 			
-			ip.addPerson(person);
 			market.setAdmin(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("eochu_bres");
@@ -109,10 +109,10 @@ public class People {
 			person.addTag(Tags.CONTACT_MILITARY);
 			person.setVoice(Voices.BUSINESS);
 			
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person, 1); // second after Sun
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("port_tse");
@@ -128,10 +128,10 @@ public class People {
 			person.getName().setLast("");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 			person.getStats().setSkillLevel(Skills.ELECTRONIC_WARFARE, 1);
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("new_maxios");
@@ -147,10 +147,10 @@ public class People {
 			person.getName().setLast("");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 			
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("laicaille_habitat");
@@ -167,10 +167,10 @@ public class People {
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 			person.setVoice(Voices.SCIENTIST);
 			
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("fikenhild");
@@ -186,10 +186,10 @@ public class People {
 			person.getName().setLast("Coureuse");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("fikenhild");
@@ -205,10 +205,10 @@ public class People {
 			person.getName().setLast("Lata");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("fikenhild");
@@ -224,10 +224,10 @@ public class People {
 			person.getName().setLast("Pharoh");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("fikenhild");
@@ -243,10 +243,10 @@ public class People {
 			person.getName().setLast("Siyavong");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("kazeron");
@@ -262,11 +262,12 @@ public class People {
 			person.getName().setFirst("Horus");
 			person.getName().setLast("Yaribay");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
-
-			ip.addPerson(person);
+			person.addTag(Tags.CONTACT_TRADE);
+			person.addTag(Tags.CONTACT_MILITARY);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		//market =  Global.getSector().getEconomy().getMarket("kantas_den");
@@ -283,10 +284,10 @@ public class People {
 			person.getName().setLast("Zal");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters",  person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("epiphany");
@@ -302,10 +303,10 @@ public class People {
 			person.getName().setLast("Cotton");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", person.getId()));
 
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 
 		{
@@ -458,10 +459,10 @@ public class People {
 			person.getStats().setSkillLevel(Skills.SPACE_OPERATIONS, 1);
 			person.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 1);
 			person.getStats().setSkillLevel(Skills.WEAPON_DRILLS, 1);
-			ip.addPerson(person);
 			market.setAdmin(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("kantas_den");
@@ -493,9 +494,9 @@ public class People {
 			}
 			market.setAdmin(person);*/
 			
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		if (market != null) {
@@ -510,10 +511,10 @@ public class People {
 			person.getName().setLast("Cydonia");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "doctor"));
 			person.getStats().setSkillLevel(Skills.GUNNERY_IMPLANTS, 1);
-			ip.addPerson(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
 			market.getCommDirectory().getEntryForPerson(person).setHidden(true);
+			ip.addPerson(person);
 		}
 		
 		
@@ -534,10 +535,10 @@ public class People {
 			person.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 1);
 			person.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
 			
-			ip.addPerson(person);
 			market.setAdmin(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		
 		market =  Global.getSector().getEconomy().getMarket("chicomoztoc");
@@ -557,10 +558,10 @@ public class People {
 			person.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 1);
 			person.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
 			
-			ip.addPerson(person);
 			market.setAdmin(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 		 
 		market =  Global.getSector().getEconomy().getMarket("ragnar_complex");
@@ -575,15 +576,15 @@ public class People {
 			person.getName().setFirst("Orcus");
 			person.getName().setLast("Rao");
 			person.setPortraitSprite(Global.getSettings().getSpriteName("characters", "orcus_rao"));
-			person.getStats().setSkillLevel(Skills.AUXILIARY_SUPPORT, 1); // if a skill uses his quote, you can bet he's going to get the skill
+			person.getStats().setSkillLevel(Skills.HELMSMANSHIP, 1);
+			person.getStats().setSkillLevel(Skills.TARGET_ANALYSIS, 1);
 			person.getStats().setSkillLevel(Skills.SPACE_OPERATIONS, 1);
-			person.getStats().setSkillLevel(Skills.PLANETARY_OPERATIONS, 1);
-			person.getStats().setSkillLevel(Skills.INDUSTRIAL_PLANNING, 1);
+			person.getStats().setSkillLevel(Skills.SPECIAL_MODIFICATIONS, 1);
 			
-			ip.addPerson(person);
 			market.setAdmin(person);
 			market.getCommDirectory().addPerson(person, 0);
 			market.addPerson(person);
+			ip.addPerson(person);
 		}
 	}
 	

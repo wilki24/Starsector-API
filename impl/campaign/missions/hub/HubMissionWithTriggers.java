@@ -1635,22 +1635,44 @@ public abstract class HubMissionWithTriggers extends BaseHubMission {
 			float fraction = min + (max - min) * random.nextFloat();
 			
 			if (fSizeOverride != null) {
-				fraction = fSizeOverride * (0.9f + random.nextFloat() * 0.2f);
+				fraction = fSizeOverride * (0.95f + random.nextFloat() * 0.1f);
 			}
+			
+			int numShipsDoctrine = 1;
+			if (params.doctrineOverride != null) numShipsDoctrine = params.doctrineOverride.getNumShips();
+			else if (faction != null) numShipsDoctrine = faction.getDoctrine().getNumShips();
+			float doctrineMult = FleetFactoryV3.getDoctrineNumShipsMult(numShipsDoctrine);
+			fraction *= 0.75f * doctrineMult;
+			float excess = 0;
+			if (fraction > FleetSize.MAXIMUM.maxFPFraction) {
+				excess = fraction - FleetSize.MAXIMUM.maxFPFraction;
+				fraction = FleetSize.MAXIMUM.maxFPFraction;
+			}
+			
 			float combatPoints = fraction * maxPoints;
 
 			FactionDoctrineAPI doctrine = params.doctrineOverride;
-			if (fraction > 0.5f) {
+			if (excess > 0) {
 				if (doctrine == null) {
 					doctrine = faction.getDoctrine().clone();
 				}
-				int added = (int)Math.round((fraction - 0.5f) / 0.1f);
+				int added = (int)Math.round(excess / 0.1f);
 				if (added > 0) {
-					doctrine.setNumShips(Math.max(1, doctrine.getNumShips() - added));
 					doctrine.setOfficerQuality(Math.min(5, doctrine.getOfficerQuality() + added));
 					doctrine.setShipQuality(doctrine.getShipQuality() + added);
 				}
 			}
+//			if (fraction > 0.5f && false) {
+//				if (doctrine == null) {
+//					doctrine = faction.getDoctrine().clone();
+//				}
+//				int added = (int)Math.round((fraction - 0.5f) / 0.1f);
+//				if (added > 0) {
+//					doctrine.setNumShips(Math.max(1, doctrine.getNumShips() - added));
+//					doctrine.setOfficerQuality(Math.min(5, doctrine.getOfficerQuality() + added));
+//					doctrine.setShipQuality(doctrine.getShipQuality() + added);
+//				}
+//			}
 			
 			if (freighterMult == null) freighterMult = 0f;
 			if (tankerMult == null) tankerMult = 0f;
@@ -1694,7 +1716,8 @@ public abstract class HubMissionWithTriggers extends BaseHubMission {
 					if (fQualityMod != null) {
 						params.qualityMod += fQuality.qualityMod;
 					} else {
-						params.qualityOverride = 1f;
+						params.qualityMod += fQuality.qualityMod;
+						//params.qualityOverride = 1f;
 					}
 					break;
 				case SMOD_1:
@@ -2512,6 +2535,13 @@ public abstract class HubMissionWithTriggers extends BaseHubMission {
 		triggerSetFleetFlag(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE_ONE_BATTLE_ONLY);
 	}
 	
+	public void triggerMakeFleetIgnoreOtherFleetsExceptPlayer() {
+		triggerMakeFleetIgnoreOtherFleets();
+		triggerMakeFleetNotIgnorePlayer();
+	}
+	public void triggerMakeFleetNotIgnorePlayer() {
+		triggerSetFleetFlag(MemFlags.FLEET_DO_NOT_IGNORE_PLAYER);
+	}
 	public void triggerMakeFleetIgnoreOtherFleets() {
 		triggerSetFleetFlag(MemFlags.FLEET_IGNORES_OTHER_FLEETS);
 	}

@@ -163,7 +163,7 @@ public class WeightedRandomPicker<T> implements Cloneable {
 		if (ignoreWeights) {
 			int index;
 			if (random != null) {
-				index = (int) (random.nextFloat() * items.size());
+				index = (int) (random.nextDouble() * items.size());
 			} else {
 				index = (int) (Math.random() * items.size());
 			}

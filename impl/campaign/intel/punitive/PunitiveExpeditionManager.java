@@ -141,8 +141,8 @@ public class PunitiveExpeditionManager implements EveryFrameScript {
 			if (timeout <= 0) {
 				timeout = 0;
 				numSentSinceTimeout = 0;
-				return;
 			}
+			return;
 		}
 		
 		boolean first = true;

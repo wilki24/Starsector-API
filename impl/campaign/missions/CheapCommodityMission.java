@@ -22,6 +22,8 @@ import com.fs.starfarer.api.util.Misc;
 
 public class CheapCommodityMission extends HubMissionWithBarEvent {
 
+	public static boolean SAME_CONTACT_DEBUG = false;
+	
 	public static float MISSION_DAYS = 60f;
 	
 	public static float MIN_BASE_VALUE = 10000;
@@ -94,6 +96,7 @@ public class CheapCommodityMission extends HubMissionWithBarEvent {
 		if (canOfferRemote && rollProbability(PROB_REMOTE)) {
 			variation = Variation.REMOTE;
 		}
+		if (SAME_CONTACT_DEBUG) variation = Variation.REMOTE;
 
 		CommodityOnMarketAPI com = null;
 		if (variation == Variation.LOCAL) {
@@ -101,7 +104,7 @@ public class CheapCommodityMission extends HubMissionWithBarEvent {
 			requireCommodityIsNotPersonnel();
 			requireCommodityDeficitAtMost(0);
 			requireCommodityAvailableAtLeast(1);
-			preferCommoditySurplusAtLeast(1);
+			requireCommoditySurplusAtLeast(1);
 			if (person.hasTag(Tags.CONTACT_UNDERWORLD) && rollProbability(PROB_ILLEGAL_IF_UNDERWORLD)) {
 				preferCommodityIllegal();
 			} else {
@@ -121,10 +124,13 @@ public class CheapCommodityMission extends HubMissionWithBarEvent {
 		if (variation == Variation.REMOTE) {
 			requireMarketIsNot(market);
 			requireMarketFaction(market.getFactionId());
+			if (SAME_CONTACT_DEBUG) {
+				requireMarketIs("jangala");
+			}
 			requireCommodityIsNotPersonnel();
 			requireCommodityDeficitAtMost(0);
 			requireCommodityAvailableAtLeast(1);
-			preferCommoditySurplusAtLeast(1);
+			requireCommoditySurplusAtLeast(1);
 			preferMarketInDirectionOfOtherMissions();
 			if (person.hasTag(Tags.CONTACT_UNDERWORLD) && rollProbability(PROB_ILLEGAL_IF_UNDERWORLD)) {
 				preferCommodityIllegal();
@@ -136,6 +142,11 @@ public class CheapCommodityMission extends HubMissionWithBarEvent {
 			}
 			com = pickCommodity();
 			if (com != null) remoteMarket = com.getMarket();
+		}
+		
+		if (SAME_CONTACT_DEBUG) {
+			com = Global.getSector().getEconomy().getMarket("jangala").getCommodityData(Commodities.ORGANICS);
+			remoteMarket = com.getMarket();
 		}
 		
 		if (com == null) return false;

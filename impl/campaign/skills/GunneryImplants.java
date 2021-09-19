@@ -13,12 +13,14 @@ public class GunneryImplants {
 	
 	public static float EW_FRIGATES = 6f;
 	public static float EW_DESTROYERS = 3f;
+	public static float EW_OTHER = 1f;
 	
 	public static class Level1A implements ShipSkillEffect {
 		public void apply(MutableShipStatsAPI stats, HullSize hullSize, String id, float level) {
 			float bonus = 0f;
 			if (hullSize == HullSize.FRIGATE) bonus = EW_FRIGATES;
 			if (hullSize == HullSize.DESTROYER) bonus = EW_DESTROYERS;
+			if (hullSize == HullSize.CRUISER || hullSize == HullSize.CAPITAL_SHIP) bonus = EW_OTHER;
 			if (bonus > 0f) {
 				stats.getDynamic().getMod(Stats.ELECTRONIC_WARFARE_FLAT).modifyFlat(id, bonus);
 			}
@@ -29,7 +31,8 @@ public class GunneryImplants {
 		public String getEffectDescription(float level) {
 			//return "+1-4" + "% to ECM rating of ships, depending on ship size";
 			return "+" + (int)EW_FRIGATES + "% to ECM rating* of fleet when piloting a frigate, " +
-				   "+" + (int) EW_DESTROYERS + "% when piloting a destroyer";
+				   "+" + (int) EW_DESTROYERS + "% when piloting a destroyer, " +
+				   "+" + (int) EW_OTHER + "% for larger hulls";
 //			"Destroyers: grants " + (int)EW_DESTROYERS + "% to ECM rating of fleet";
 //			return "Frigates: grants " + (int)EW_FRIGATES + "% to ECM rating of fleet\n"+
 //				   "Destroyers: grants " + (int)EW_DESTROYERS + "% to ECM rating of fleet";

@@ -68,11 +68,11 @@ public class CBRemnant extends BaseCustomBountyCreator {
 			type = FleetTypes.PATROL_LARGE;
 			oQuality = OfficerQuality.AI_MIXED;
 		} else if (difficulty == 9) {
-			size = FleetSize.VERY_LARGE;
+			size = FleetSize.HUGE;
 			type = FleetTypes.PATROL_LARGE;
 			oQuality = OfficerQuality.AI_ALPHA;
 		} else {
-			size = FleetSize.HUGE;
+			size = FleetSize.MAXIMUM;
 			type = FleetTypes.PATROL_LARGE;
 			oQuality = OfficerQuality.AI_ALPHA;
 		}

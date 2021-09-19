@@ -63,6 +63,7 @@ public class CBPatrol extends BaseCustomBountyCreator {
 		mission.requireMarketNotInHyperspace();
 		mission.requireMarketFactionCustom(ReqMode.NOT_ANY, Factions.CUSTOM_DECENTRALIZED);
 		mission.requireMarketFactionNot(Factions.PIRATES); // redundant, given the above 
+		mission.requireMarketFactionNotPlayer();
 		mission.requireMarketLocationNot(createdAt.getContainingLocation());
 		MarketAPI target = mission.pickMarket();
 		

@@ -148,6 +148,8 @@ public interface CombatFleetManagerAPI {
 	DeployedFleetMemberAPI getDeployedFleetMemberFromAllEverDeployed(ShipAPI ship);
 
 	ShipAPI getShipFor(PersonAPI captain);
+
+	FleetMemberAPI getBiggestStationDeployedOrNot();
 }
 
 

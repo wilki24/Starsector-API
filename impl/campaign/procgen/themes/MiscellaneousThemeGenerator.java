@@ -40,6 +40,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 	
 	public static int MIN_GATES = Global.getSettings().getInt("minNonCoreGatesInSector");
 	public static int MAX_GATES = Global.getSettings().getInt("maxNonCoreGatesInSector");
+	public static int MIN_GATES_TO_ADD = Global.getSettings().getInt("minGatesToAddOnSecondPass");
 	
 	
 	public String getThemeId() {
@@ -168,6 +169,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 			long seed = StarSystemGenerator.random.nextLong();
 			planet.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SEED, seed);
 			planet.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SPEC_ID_OVERRIDE, "red_planet");
+			planet.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
 			//planet.addTag(Tags.SALVAGEABLE);
 			
 //			SectorEntityToken beacon = Misc.addWarningBeacon(planet, gap, Tags.BEACON_HIGH);
@@ -231,7 +233,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 							}
 						} else {
 							numNonSalvageable--;
-							SalvageSpecialAssigner.assignSpecials(ae.entity);
+							SalvageSpecialAssigner.assignSpecials(ae.entity, true);
 						}
 						if (DEBUG) System.out.println("      Added " + variant + " to " + data.system + "\n");
 					}
@@ -474,6 +476,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		
 		
 		int addGates = MIN_GATES + random.nextInt(MAX_GATES - MIN_GATES + 1) - gates.size();
+		if (addGates < MIN_GATES_TO_ADD) addGates = MIN_GATES_TO_ADD;
 		if (addGates <= 0) {
 			if (DEBUG) System.out.println("  Already have " + gates.size() + " gates, not adding any");
 			return;

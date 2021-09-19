@@ -454,7 +454,7 @@ public class DeliveryBarEvent extends BaseGetCommodityBarEvent {
 			String sir = "sir";
 			if (Global.getSector().getPlayerPerson().isFemale()) sir = "ma'am";
 			str = "\"Oh, it's you, " + sir + "!\", " + getHeOrShe() + 
-			" exclaims excitedly. \"We've got a little logistical problem that could use " +
+			" exclaims. Taking a moment to recover " + getHisOrHer() + " composure, " + getHeOrShe() + " says \"We've got a little logistical problem that could use " +
 			"your personal touch. " +
 			   "There are %s units of " + data.comFrom.getCommodity().getLowerCaseName() + " that urgently need to be delivered " +
 			   " to %s" + 
@@ -466,7 +466,7 @@ public class DeliveryBarEvent extends BaseGetCommodityBarEvent {
 				str += "However, recent Pather cell activity has been making that difficult, and the regular trade fleets " +
 				"aren't quite up to the task.\"";
 			} else {
-				str += "But, well, you know how trader captains are like. " +
+				str += "But, well, you know what trader captains are like. " +
 						"There have been some disagreements over hazard pay, and it's left us in the lurch.\"";
 			}
 		} else {

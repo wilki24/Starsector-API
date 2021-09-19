@@ -20,7 +20,7 @@ import com.fs.starfarer.api.input.InputEventAPI;
 public class ElectronicWarfareScript extends BaseEveryFrameCombatPlugin {
 	public static Object KEY_STATUS = new Object();
 	
-	public static float BASE_MAXIMUM = 20;
+	public static float BASE_MAXIMUM = 10;
 	
 	public static float PER_JAMMER = 5;
 	

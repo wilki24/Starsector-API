@@ -220,7 +220,7 @@ public class GAAtTheGates extends GABaseMission implements CurrentLocationChange
 		triggerCreateFleet(FleetSize.MEDIUM, FleetQuality.HIGHER, Factions.PERSEAN, FleetTypes.PATROL_MEDIUM, kazeron.getStarSystem());
 		triggerSetFleetOfficers(OfficerNum.MORE, OfficerQuality.HIGHER);
 		triggerMakeNonHostile();
-		triggerMakeFleetIgnoreOtherFleets(); // don't go chasing others, please.
+		triggerMakeFleetIgnoreOtherFleetsExceptPlayer(); // don't go chasing others, please.
 		triggerFleetAllowLongPursuit();
 		triggerSetFleetAlwaysPursue();
 		triggerFleetMakeFaster(true, 1, true);
@@ -445,13 +445,13 @@ public class GAAtTheGates extends GABaseMission implements CurrentLocationChange
 		{
 			info.addPara("Set up a private meeting with High Hegemon Baikal Daud and get him to accept the deal with Provost Baird.", opad);
 			info.addPara("Optional: provide Daud with encrypted Yaribay comm codes.", opad);
-			addStandardMarketDesc("The High Hegemon's office is based " + chicomoztoc.getOnOrAt(), kazeron, info, opad);
+			addStandardMarketDesc("The High Hegemon's office is based " + chicomoztoc.getOnOrAt(), chicomoztoc, info, opad);
 		}
 		else if (currentStage == Stage.MEET_DAUD)
 		{
 			info.addPara("Meet with High Hegemon Baikal Daud on a shipyard orbiting Chicomoztoc.", opad);
 			info.addPara("Optional: provide Daud with encrypted Yaribay comm codes.", opad);
-			addStandardMarketDesc("The High Hegemon's office is based " + chicomoztoc.getOnOrAt(), kazeron, info, opad);
+			addStandardMarketDesc("The High Hegemon's office is based " + chicomoztoc.getOnOrAt(), chicomoztoc, info, opad);
 		}
 		else if (currentStage == Stage.MEET_DAUD)
 		{

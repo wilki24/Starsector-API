@@ -31,6 +31,7 @@ public class PirateBaseManager extends BaseEventManager {
 	protected float extraDays = 0;
 	
 	protected int numDestroyed = 0;
+	protected int numSpawnChecksToSkip = 0;
 	
 	public PirateBaseManager() {
 		super();
@@ -65,6 +66,11 @@ public class PirateBaseManager extends BaseEventManager {
 	protected Random random = new Random();
 	@Override
 	protected EveryFrameScript createEvent() {
+		if (numSpawnChecksToSkip > 0) {
+			numSpawnChecksToSkip--;
+			return null;
+		}
+		
 		if (random.nextFloat() < CHECK_PROB) return null;
 		
 		StarSystemAPI system = pickSystemForPirateBase();
@@ -241,6 +247,9 @@ public class PirateBaseManager extends BaseEventManager {
 	
 	public void incrDestroyed() {
 		numDestroyed++;
+		numSpawnChecksToSkip = Math.max(numSpawnChecksToSkip, (Tuning.PIRATE_BASE_MIN_TIMEOUT_MONTHS + 
+					Misc.random.nextInt(Tuning.PIRATE_BASE_MAX_TIMEOUT_MONTHS - Tuning.PIRATE_BASE_MIN_TIMEOUT_MONTHS + 1))
+				* 3); // checks happen every 10 days on average, *3 to get months
 	}
 	
 }

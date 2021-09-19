@@ -191,6 +191,7 @@ public class TransmitterTrapSpecial extends BaseSalvageSpecial {
 			} else {
 				fleet.setTransponderOn(false);
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_PIRATE, true);
+				Misc.makeNoRepImpact(fleet, "tTrap");
 			}
 			
 			float range = data.minRange + random.nextFloat() * (data.maxRange - data.minRange);

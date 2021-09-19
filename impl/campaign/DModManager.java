@@ -2,7 +2,6 @@ package com.fs.starfarer.api.impl.campaign;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -207,7 +206,7 @@ public class DModManager {
 			potentialMods.addAll(getModsWithTags(Tags.HULLMOD_CARRIER_ALWAYS));
 		}
 		
-		potentialMods = new ArrayList<HullModSpecAPI>(new HashSet<HullModSpecAPI>(potentialMods));
+		potentialMods = new ArrayList<HullModSpecAPI>(potentialMods);
 		
 		removeModsAlreadyInVariant(variant, potentialMods);
 		

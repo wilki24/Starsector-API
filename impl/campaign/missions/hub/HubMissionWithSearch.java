@@ -1556,10 +1556,18 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 		List<PlanetAPI> inPreferredSystems = new ArrayList<PlanetAPI>();
 		List<PlanetAPI> inMatchingSystems = new ArrayList<PlanetAPI>();
 		for (StarSystemAPI system : search.matchingSystems) {
-			inMatchingSystems.addAll(system.getPlanets());
+			for (PlanetAPI planet : system.getPlanets()) {
+				if (planet.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
+				inMatchingSystems.add(planet);
+			}
+			//inMatchingSystems.addAll(system.getPlanets());
 		}
 		for (StarSystemAPI system : search.preferredSystems) {
-			inPreferredSystems.addAll(system.getPlanets());
+			for (PlanetAPI planet : system.getPlanets()) {
+				if (planet.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
+				inPreferredSystems.add(planet);
+			}
+			//inPreferredSystems.addAll(system.getPlanets());
 		}
 			
 		List<PlanetAPI> matchesInPref = new ArrayList<PlanetAPI>();
@@ -1672,6 +1680,7 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 			for (SectorEntityToken entity : entities) {
 				if (entity instanceof AsteroidAPI) continue;
 				if (entity.hasTag(Tags.EXPIRES)) continue;
+				if (entity.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
 				inMatchingSystems.add(entity);
 			}
 		}
@@ -1680,6 +1689,7 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 			for (SectorEntityToken entity : entities) {
 				if (entity instanceof AsteroidAPI) continue;
 				if (entity.hasTag(Tags.EXPIRES)) continue;
+				if (entity.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
 				inPreferredSystems.add(entity);
 			}
 		}
@@ -1782,6 +1792,11 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 	
 	protected void findMatchingMarkets() {
 		List<MarketAPI> markets = Global.getSector().getEconomy().getMarketsCopy();
+//		System.out.println("BEGIN");
+//		for (MarketAPI curr : markets) {
+//			System.out.println(curr.getName());
+//		}
+//		System.out.println("END");
 //		findMatchingSystems();
 //		if (!(search.systemPrefs.isEmpty() && search.systemReqs.isEmpty())) {
 //			Set<StarSystemAPI> systems = new HashSet<StarSystemAPI>(search.matchingSystems);
@@ -1807,6 +1822,9 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 		findMatchingMarkets();
 		MarketAPI market = (MarketAPI) pickFromMatching(search.matchingMarkets, search.preferredMarkets);
 		if (resetSearch) resetSearch();
+		
+		//if (true) return Global.getSector().getEconomy().getMarket("nomios");
+		
 		return market;
 	}
 	
@@ -1923,6 +1941,9 @@ public abstract class HubMissionWithSearch extends HubMissionWithTriggers {
 	}
 	
 	
+	public void requireMarketIs(String id) {
+		search.marketReqs.add(new MarketIsReq(Global.getSector().getEconomy().getMarket(id), false));
+	}
 	public void requireMarketIs(final MarketAPI param) {
 		search.marketReqs.add(new MarketIsReq(param, false));
 	}

@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 
 public class ImpactMitigation {
 	
-	public static final float ARMOR_BONUS = 150;
+	public static final float ARMOR_BONUS = 50;
 //	public static final float MAX_DAMAGE_REDUCTION_BONUS = 0.05f;
 //	public static final float MIN_ARMOR_FRACTION_BONUS = 0.1f;
 	public static final float ARMOR_DAMAGE_REDUCTION = 25f;
@@ -16,15 +16,18 @@ public class ImpactMitigation {
 	
 	public static class Level1 implements ShipSkillEffect {
 		public void apply(MutableShipStatsAPI stats, HullSize hullSize, String id, float level) {
+			//stats.getArmorBonus().modifyFlat(id, ARMOR_BONUS);
 			stats.getEffectiveArmorBonus().modifyFlat(id, ARMOR_BONUS);
 		}
 		
 		public void unapply(MutableShipStatsAPI stats, HullSize hullSize, String id) {
+			//stats.getArmorBonus().unmodify(id);
 			stats.getEffectiveArmorBonus().unmodify(id);
 		}	
 		
 		public String getEffectDescription(float level) {
 			return "+" + (int)(ARMOR_BONUS) + " armor for damage reduction calculation only";
+			//return "+" + (int)(ARMOR_BONUS) + " maximum armor";
 		}
 		
 		public String getEffectPerLevelDescription() {

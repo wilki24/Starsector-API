@@ -37,6 +37,9 @@ public class EmergencyBurnAbilityAI extends BaseAbilityAI {
 		interval.advance(days * EmergencyBurnAbilityAI.AI_FREQUENCY_MULT * 0.25f);
 		if (!interval.intervalElapsed()) return;
 		
+//		if (fleet.getName().contains("[5]")) {
+//			System.out.println("ewfwefwe");
+//		}
 		if (ability.isActiveOrInProgress()) {
 			MemoryAPI mem = fleet.getMemoryWithoutUpdate();
 			mem.set(FleetAIFlags.HAS_SPEED_BONUS, true, 0.2f);

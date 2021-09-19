@@ -65,7 +65,7 @@ public class Noise {
 	private static void fill(float[] noise, int x, int x1, int x2, int iter, float spikes) {
 		if (noise[x] == -1) {
 			float avg = (noise[x1] + noise[x2]) / 2f;
-			noise[x] = avg + ((float) Math.pow(spikes, (iter)) * (float) (random.nextFloat() - .5f));
+			noise[x] = avg + ((float) Math.pow(spikes, (iter)) * (float) (random.nextDouble() - .5f));
 		}
 	}
 }

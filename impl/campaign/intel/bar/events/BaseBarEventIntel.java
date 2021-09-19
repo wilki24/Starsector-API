@@ -58,4 +58,8 @@ public class BaseBarEventIntel extends BaseIntelPlugin implements PortsideBarEve
 	public String getBarEventId() {
 		return null;
 	}
+
+	public boolean isAlwaysShow() {
+		return false;
+	}
 }

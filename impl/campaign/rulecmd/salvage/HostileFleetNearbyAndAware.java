@@ -32,6 +32,10 @@ public class HostileFleetNearbyAndAware extends BaseCommandPlugin {
 			if (!fleet.isHostileTo(playerFleet)) continue;
 			if (fleet.getBattle() != null) continue;
 			
+			if (Misc.isInsignificant(fleet)) {
+				continue;
+			}
+			
 			
 			VisibilityLevel level = playerFleet.getVisibilityLevelTo(fleet);
 //			MemoryAPI mem = fleet.getMemoryWithoutUpdate();

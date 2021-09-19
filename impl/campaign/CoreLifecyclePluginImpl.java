@@ -789,6 +789,7 @@ public class CoreLifecyclePluginImpl extends BaseModPlugin {
 		Misc.makeStoryCritical("eochu_bres", id);
 		Misc.makeStoryCritical("port_tse", id);
 		Misc.makeStoryCritical("new_maxios", id);
+		Misc.makeStoryCritical("coatl", id);
 		
 		id = Missions.COUREUSE;
 		Misc.makeStoryCritical("laicaille_habitat", id);
@@ -2678,7 +2679,17 @@ public class CoreLifecyclePluginImpl extends BaseModPlugin {
 		config.backingOffWhileNotVentingAllowed = false;
 		config.turnToFaceWithUndamagedArmor = false;
 		config.burnDriveIgnoreEnemies = true;
-		config.personalityOverride = Personalities.RECKLESS;
+		
+		boolean carrier = false;
+		if (ship != null && ship.getVariant() != null) {
+			carrier = ship.getVariant().isCarrier() && !ship.getVariant().isCombat();
+		}
+		if (carrier) {
+			config.personalityOverride = Personalities.AGGRESSIVE;
+			config.backingOffWhileNotVentingAllowed = true;
+		} else {
+			config.personalityOverride = Personalities.RECKLESS;
+		}
 		
 		return new PluginPick<ShipAIPlugin>(Global.getSettings().createDefaultShipAI(ship, config), PickPriority.CORE_SPECIFIC);
 	}

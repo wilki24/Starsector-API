@@ -453,6 +453,7 @@ public class CustomProductionContract extends HubMissionWithBarEvent {
 		
 		if (currentStage == Stage.DELIVERED) {
 			StoragePlugin plugin = (StoragePlugin) Misc.getStorage(getPerson().getMarket());
+			if (plugin == null) return;
 			plugin.setPlayerPaidToUnlock(true);
 			
 			CargoAPI cargo = plugin.getCargo();
@@ -467,7 +468,8 @@ public class CustomProductionContract extends HubMissionWithBarEvent {
 				String patrolFaction = person.getMarket().getFactionId();
 				if (patrolFaction.equals(person.getFaction().getId()) || 
 						Misc.isPirateFaction(person.getMarket().getFaction()) ||
-						Misc.isDecentralized(person.getMarket().getFaction())) {
+						Misc.isDecentralized(person.getMarket().getFaction()) ||
+						patrolFaction.equals(Factions.PLAYER)) {
 					return;
 				}
 				

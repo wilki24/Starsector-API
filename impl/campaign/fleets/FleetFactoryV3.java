@@ -26,6 +26,7 @@ import com.fs.starfarer.api.campaign.econ.CommodityOnMarketAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.characters.SkillSpecAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -40,6 +41,7 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Personalities;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.ShipRoles;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.loading.AbilitySpecAPI;
 import com.fs.starfarer.api.plugins.CreateFleetPlugin;
@@ -203,6 +205,8 @@ public class FleetFactoryV3 {
 		
 		CampaignFleetAPI fleet = createEmptyFleet(factionId, params.fleetType, market);
 		fleet.getFleetData().setOnlySyncMemberLists(true);
+		
+		Misc.getSalvageSeed(fleet); // will set it
 		
 //		if (true) {
 //			fleet.getFleetData().setOnlySyncMemberLists(false);
@@ -1023,12 +1027,15 @@ public class FleetFactoryV3 {
 		if (members.isEmpty()) return;
 		
 		float combatPoints = 0f;
+		float combatShips = 0f;
 		for (FleetMemberAPI member : members) {
 			if (member.isCivilian()) continue;
 			if (member.isFighterWing()) continue;
 			combatPoints += member.getFleetPointCost();
+			combatShips++;
 		}
 		if (combatPoints < 1f) combatPoints = 1f;
+		if (combatShips < 1f) combatShips = 1f;
 		
 		boolean debug = true;
 		debug = false;
@@ -1036,7 +1043,7 @@ public class FleetFactoryV3 {
 		
 		int maxCommanderLevel = Global.getSettings().getInt("maxAIFleetCommanderLevel");
 		float mercMult = Global.getSettings().getFloat("officerAIMaxMercsMult");
-		float mercFP = Global.getSettings().getFloat("officerAIMercsStartingFP");
+		//float mercFP = Global.getSettings().getFloat("officerAIMercsStartingFP");
 		int maxOfficers = Global.getSettings().getInt("officerAIMax");
 		int baseMaxOfficerLevel = Global.getSettings().getInt("officerMaxLevel");
 		OfficerLevelupPlugin plugin = (OfficerLevelupPlugin) Global.getSettings().getPlugin("officerLevelUp");
@@ -1044,22 +1051,21 @@ public class FleetFactoryV3 {
 		float officerQualityMult = (doctrine.getOfficerQuality() - 1f) / 4f;
 		if (officerQualityMult > 1f) officerQualityMult = 1f;
 		
-		float baseFPPerOfficer = 20f;
-//		if (params.officerNumberMult > 0) {
-//			baseFPPerOfficer /= params.officerNumberMult;
-//		} else {
-//			baseFPPerOfficer = 10000000f;
-//		}
-		float fpPerBaseOfficer = baseFPPerOfficer - (baseFPPerOfficer * 0.5f * officerQualityMult);  
-		float fpPerExtraOfficer = fpPerBaseOfficer * 1f;  
+//		float baseFPPerOfficer = Global.getSettings().getFloat("baseFPPerOfficer");
+//		float fpPerBaseOfficer = baseFPPerOfficer - (baseFPPerOfficer * 0.5f * officerQualityMult);  
+//		float fpPerExtraOfficer = fpPerBaseOfficer * 1f;
 		
-		float fleetSizeOfficerQualityMult = combatPoints / (fpPerBaseOfficer * maxOfficers);
+		float baseShipsForMaxOfficerLevel = Global.getSettings().getFloat("baseCombatShipsForMaxOfficerLevel");
+		float baseCombatShipsPerOfficer = Global.getSettings().getFloat("baseCombatShipsPerOfficer");
+		float combatShipsPerOfficer = baseCombatShipsPerOfficer * (1f - officerQualityMult * 0.5f);
+		
+		//float fleetSizeOfficerQualityMult = combatPoints / (fpPerBaseOfficer * maxOfficers);
+		float fleetSizeOfficerQualityMult = combatShips / (baseShipsForMaxOfficerLevel *  (1f - officerQualityMult * 0.5f));
 		if (fleetSizeOfficerQualityMult > 1) fleetSizeOfficerQualityMult = 1;
-//		float fleetSizeOfficerQualityMult = 0.5f;
 		
 		//int numOfficers = (int) (combatPoints / fpPerBaseOfficer) + params.officerNumberBonus;
-		int numOfficers = (int) Math.min(maxOfficers, combatPoints / fpPerBaseOfficer);
-		numOfficers += (int) Math.max(0, (combatPoints - mercFP) / fpPerExtraOfficer);
+		int numOfficers = (int) Math.min(maxOfficers, combatShips / combatShipsPerOfficer);
+		//numOfficers += (int) Math.max(0, (combatPoints - mercFP) / fpPerExtraOfficer);
 		numOfficers += params.officerNumberBonus;
 		numOfficers = Math.round(numOfficers * params.officerNumberMult);
 		
@@ -1074,7 +1080,7 @@ public class FleetFactoryV3 {
 		
 		//int maxOfficerLevel = (int) Math.round((officerQualityMult * 0.75f + fleetSizeOfficerQualityMult * 1f) * (float) baseMaxOfficerLevel);
 		int maxOfficerLevel = (int)Math.round(((float)doctrine.getOfficerQuality() / 2f) +  
-								(fleetSizeOfficerQualityMult * 2f) * (float) baseMaxOfficerLevel);
+								(fleetSizeOfficerQualityMult * 1f) * (float) baseMaxOfficerLevel);
 		if (maxOfficerLevel < 1) maxOfficerLevel = 1;
 		maxOfficerLevel += params.officerLevelBonus;
 		if (maxOfficerLevel < 1) maxOfficerLevel = 1;
@@ -1224,7 +1230,7 @@ public class FleetFactoryV3 {
 		} else if (level >= forOne) {
 			numSkills = 1;
 		}
-		
+
 		if (numSkills <= 0) return;
 		
 		FactionDoctrineAPI doctrine = fleet.getFaction().getDoctrine();
@@ -1233,6 +1239,17 @@ public class FleetFactoryV3 {
 		}
 		
 		List<String> skills = new ArrayList<String>(doctrine.getCommanderSkills());
+		
+		Iterator<String> iter = skills.iterator();
+		while (iter.hasNext()) {
+			String id = iter.next();
+			SkillSpecAPI spec = Global.getSettings().getSkillSpec(id);
+			if (spec != null && spec.hasTag(Skills.TAG_PLAYER_ONLY)) {
+				iter.remove();
+			}
+		}
+		
+		
 		if (skills.isEmpty()) return;
 		
 		if (random.nextFloat() < doctrine.getCommanderSkillsShuffleProbability()) {

@@ -78,7 +78,7 @@ public class BaseSalvageSpecial implements SalvageSpecialPlugin {
 		ExtraSalvage temp = getTempExtraSalvage(entity);
 		CargoAPI cargo = Global.getFactory().createCargo(true);
 		if (extra != null && extra.cargo != null) cargo.addAll(extra.cargo);
-		if (temp != null && temp.cargo != null) cargo.addAll(extra.cargo);
+		if (temp != null && temp.cargo != null) cargo.addAll(temp.cargo);
 		return cargo;
 	}
 	public static ExtraSalvage getTempExtraSalvage(SectorEntityToken entity) {

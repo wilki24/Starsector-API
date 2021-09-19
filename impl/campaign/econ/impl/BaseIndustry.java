@@ -1787,7 +1787,7 @@ public abstract class BaseIndustry implements Industry, Cloneable {
 			}
 		}
 		
-		return 0;
+		return interest;
 	}
 
 	public CargoAPI generateCargoForGatheringPoint(Random random) {

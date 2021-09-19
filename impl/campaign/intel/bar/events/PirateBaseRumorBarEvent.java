@@ -9,8 +9,8 @@ import com.fs.starfarer.api.campaign.PersonImportance;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.characters.FullName.Gender;
+import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Ranks;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -22,6 +22,10 @@ import com.fs.starfarer.api.util.Misc;
 public class PirateBaseRumorBarEvent extends BaseBarEvent {
 	protected PirateBaseIntel intel;
 	protected long seed;
+	
+	public boolean isAlwaysShow() {
+		return true;
+	}
 	
 	public PirateBaseRumorBarEvent(PirateBaseIntel intel) {
 		this.intel = intel;

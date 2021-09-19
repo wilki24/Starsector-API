@@ -360,6 +360,8 @@ public class DecivTracker implements EveryFrameScript {
 	}
 	
 	public static void sendWarning(MarketAPI market) {
+		if (market.getMemoryWithoutUpdate().getBoolean(DecivTracker.NO_DECIV_KEY)) return;
+		
 		DecivIntel intel = new DecivIntel(market, market.getPrimaryEntity(), false, true);
 		Global.getSector().getIntelManager().addIntel(intel);
 	}

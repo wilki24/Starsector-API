@@ -15,8 +15,8 @@ import com.fs.starfarer.api.combat.DamagingProjectileAPI;
 import com.fs.starfarer.api.combat.MissileAPI;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener;
 import com.fs.starfarer.api.combat.listeners.DamageDealtModifier;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
@@ -29,7 +29,7 @@ public class EnergyWeaponMastery {
 	public static float MIN_RANGE = 600;
 	public static float MAX_RANGE = 1000;
 	
-	public static float ENERGY_DAMAGE_PERCENT = 50;
+	public static float ENERGY_DAMAGE_PERCENT = 30;
 	//public static float ENERGY_DAMAGE_MIN_FLUX_LEVEL = 0.25f;
 	public static float ENERGY_DAMAGE_MIN_FLUX_LEVEL = 0f;
 	

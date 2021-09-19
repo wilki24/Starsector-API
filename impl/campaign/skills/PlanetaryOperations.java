@@ -21,7 +21,7 @@ public class PlanetaryOperations {
 	
 	public static class Level1 implements MarketSkillEffect {
 		public void apply(MarketAPI market, String id, float level) {
-			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).modifyMult(id, 1f + DEFEND_BONUS * 0.01f, "Planetary operations");
+			market.getStats().getDynamic().getMod(Stats.GROUND_DEFENSES_MOD).modifyMult(id, 1f + DEFEND_BONUS * 0.01f, "Ground operations");
 		}
 
 		public void unapply(MarketAPI market, String id) {
@@ -44,7 +44,7 @@ public class PlanetaryOperations {
 	
 	public static class Level2 implements MarketSkillEffect {
 		public void apply(MarketAPI market, String id, float level) {
-			market.getStability().modifyFlat(id, STABILITY_BONUS, "Planetary operations");
+			market.getStability().modifyFlat(id, STABILITY_BONUS, "Ground operations");
 		}
 
 		public void unapply(MarketAPI market, String id) {
@@ -67,7 +67,7 @@ public class PlanetaryOperations {
 	public static class Level3 extends BaseSkillEffectDescription implements FleetStatsSkillEffect {
 		public void apply(MutableFleetStatsAPI stats, String id, float level) {
 			//stats.getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).modifyMult(id, 1f + ATTACK_BONUS * 0.01f, "Planetary operations");
-			stats.getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).modifyPercent(id, ATTACK_BONUS, "Planetary operations");
+			stats.getDynamic().getMod(Stats.PLANETARY_OPERATIONS_MOD).modifyPercent(id, ATTACK_BONUS, "Ground operations");
 		}
 		
 		public void unapply(MutableFleetStatsAPI stats, String id) {
@@ -102,7 +102,7 @@ public class PlanetaryOperations {
 	
 	public static class Level4 implements FleetStatsSkillEffect {
 		public void apply(MutableFleetStatsAPI stats, String id, float level) {
-			stats.getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT).modifyMult(id, CASUALTIES_MULT, "Planetary operations");
+			stats.getDynamic().getStat(Stats.PLANETARY_OPERATIONS_CASUALTIES_MULT).modifyMult(id, CASUALTIES_MULT, "Ground operations");
 		}
 		
 		public void unapply(MutableFleetStatsAPI stats, String id) {

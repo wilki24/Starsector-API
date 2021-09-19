@@ -4,6 +4,7 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI.MessageClickAction;
+import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipVariantAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.impl.campaign.DModManager;
@@ -17,7 +18,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 
 public class FieldRepairsScript implements EveryFrameScript {
 
-	public static int MONTHS_PER_DMOD_REMOVAL = 2;
+	public static int MONTHS_PER_DMOD_REMOVAL = 1;
 	
 	protected IntervalUtil tracker = new IntervalUtil(10f, 20f);
 	
@@ -37,7 +38,7 @@ public class FieldRepairsScript implements EveryFrameScript {
 		float days = Global.getSector().getClock().convertToDays(amount);
 		float rateMult = 1f / (float) MONTHS_PER_DMOD_REMOVAL;
 		//days *= 100f;
-		tracker.advance(days * rateMult);
+		tracker.advance(days * rateMult * 0.5f); // * 0.5f since the tracker interval averages 15 days
 		if (tracker.intervalElapsed()) {
 			// pick which ship to remove which d-mod from half a month ahead of time
 			// if it's no longer present in the fleet when it's time to remove the d-mod,
@@ -52,6 +53,11 @@ public class FieldRepairsScript implements EveryFrameScript {
 					MessageIntel intel = new MessageIntel(picked.getShipName() + " - repaired " + spec.getDisplayName(), Misc.getBasePlayerColor());
 					intel.setIcon(Global.getSettings().getSpriteName("intel", "repairs_finished"));
 					Global.getSector().getCampaignUI().addMessage(intel, MessageClickAction.REFIT_TAB, picked);
+					
+					int dmods = DModManager.getNumDMods(picked.getVariant());
+					if (dmods <= 0) {
+						restoreToNonDHull(picked.getVariant());
+					}
 				}
 				picked = null;
 				pickNext();
@@ -99,6 +105,24 @@ public class FieldRepairsScript implements EveryFrameScript {
 		return false;
 	}
 
+	
+	public static void restoreToNonDHull(ShipVariantAPI v) {
+		ShipHullSpecAPI base = v.getHullSpec().getDParentHull();
+		
+		// so that a skin with dmods can be "restored" - i.e. just dmods suppressed w/o changing to
+		// actual base skin
+		//if (!v.getHullSpec().isDHull()) base = v.getHullSpec();
+		if (!v.getHullSpec().isDefaultDHull() && !v.getHullSpec().isRestoreToBase()) base = v.getHullSpec();
+		
+		if (base == null && v.getHullSpec().isRestoreToBase()) {
+			base = v.getHullSpec().getBaseHull();
+		}
+		
+		if (base != null) {
+			//v.clearPermaMods();
+			v.setHullSpecAPI(base);
+		}
+	}
 }
 
 

@@ -28,7 +28,7 @@ public class MakeOtherFleetDoThing extends BaseCommandPlugin {
 		float dur = params.get(1).getFloat(memoryMap); 
 		
 		boolean clear = false;
-		if (params.size() >= 3) {
+		if (params.size() > 3) {
 			clear = params.get(3).getBoolean(memoryMap);
 		}
 		

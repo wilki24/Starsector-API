@@ -150,6 +150,7 @@ public class TTBlackSite {
 		//system.setType(StarSystemType.NEBULA);
 		system.setName("Unknown Location"); // to get rid of "Star System" at the end of the name
 		system.addTag(Tags.THEME_UNSAFE);
+		system.addTag(Tags.THEME_HIDDEN);
 		LocationAPI hyper = Global.getSector().getHyperspace();
 		
 		system.getMemoryWithoutUpdate().set(MusicPlayerPluginImpl.MUSIC_SET_MEM_KEY, "music_campaign_alpha_site");

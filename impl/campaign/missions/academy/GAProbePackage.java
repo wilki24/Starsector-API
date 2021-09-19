@@ -227,7 +227,7 @@ public class GAProbePackage extends GABaseMission {
 			}
 			return true;
 		} else if (currentStage == Stage.FIND_SCAVENGER) {
-			info.addPara("Recover the instrument package from scavengers at the nearest jump-point",
+			info.addPara("Recover the instrument package from scavengers at one of the jump-points",
 					tc, pad);
 		} else if (currentStage == Stage.RETURN_TO_ACADEMY) {
 			info.addPara("Return to the Galatia Academy and talk to " + getPerson().getNameString(), tc, pad);

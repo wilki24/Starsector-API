@@ -2,8 +2,8 @@ package com.fs.starfarer.api.impl.hullmods;
 
 import com.fs.starfarer.api.combat.BaseHullMod;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShieldAPI.ShieldType;
+import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 
 public class ShieldShunt extends BaseHullMod {
@@ -27,6 +27,8 @@ public class ShieldShunt extends BaseHullMod {
 	}
 
 	public boolean isApplicableToShip(ShipAPI ship) {
+		if (ship.getVariant().getHullSpec().getShieldType() == ShieldType.NONE && 
+				!ship.getVariant().hasHullMod("frontshield")) return false;
 		if (ship.getVariant().hasHullMod("shield_shunt")) return true;
 		return ship != null && ship.getShield() != null;
 	}

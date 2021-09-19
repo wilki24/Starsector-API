@@ -5,11 +5,11 @@ import java.util.Random;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import com.fs.starfarer.api.campaign.CargoStackAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SpecialItemData;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
-import com.fs.starfarer.api.campaign.CargoAPI.CargoItemType;
 import com.fs.starfarer.api.campaign.econ.CommoditySpecAPI;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
@@ -198,11 +198,12 @@ public class BlueprintGroundRaidObjectivePluginImpl extends BaseGroundRaidObject
 		
 		Pair<Integer, Integer> q = getQuantityRange();
 		int num = q.one + random.nextInt(q.two - q.one);
-		for (int i = 0; i < num && !unknown.isEmpty(); i++) {
+		for (int i = 0; i < num && (!unknown.isEmpty() || !all.isEmpty()); i++) {
 			String id = unknown.pickAndRemove();
 			if (id == null) {
 				id = all.pickAndRemove();
 			}
+			if (id == null) continue;
 			
 			if (id.startsWith(ship)) {
 				String specId = id.substring(ship.length());

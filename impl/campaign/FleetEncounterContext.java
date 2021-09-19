@@ -100,9 +100,6 @@ public class FleetEncounterContext implements FleetEncounterContextPlugin {
 	}
 
 	public DataForEncounterSide getDataFor(CampaignFleetAPI participantOrCombined) {
-//		if (participant == null) {
-//			System.out.println("wtfffff");
-//		}
 		CampaignFleetAPI combined = battle.getCombinedFor(participantOrCombined);
 		if (combined == null) {
 			return new DataForEncounterSide(participantOrCombined);

@@ -79,7 +79,8 @@ public class GAFindingCoureuse extends GABaseMission {
 		kapteynAgent = Global.getSector().getFaction(Factions.PIRATES).createRandomPerson(genRandom);
 		kapteynAgent.setRankId(Ranks.CITIZEN);
 		kapteynAgent.setPostId(Ranks.POST_SHADY);
-		kapteynAgent.setImportance(PersonImportance.LOW);
+		kapteynAgent.setImportance(PersonImportance.MEDIUM);
+		kapteynAgent.addTag(Tags.CONTACT_UNDERWORLD);
 		kapteyn.getCommDirectory().addPerson(kapteynAgent);
 		kapteyn.addPerson(kapteynAgent);
 		
@@ -337,7 +338,7 @@ public class GAFindingCoureuse extends GABaseMission {
 			return true;
 		} else if (currentStage == Stage.FOLLOW_THE_EXPERIMENTS) {
 			info.addPara(getGoToSystemTextShort(probeSystem) + 
-					"and search for the experimental packages possibly being used by Coureuse", tc, pad);
+					" and search for the experimental packages possibly being used by Coureuse", tc, pad);
 			return true;
 		} else if (currentStage == Stage.SEARCH_ISIRAH) {
 			info.addPara("Search the Isirah system for Scylla Coureuse, talk to people who might be hiding "

@@ -50,6 +50,7 @@ public class AnalyzeEntityIntelCreator implements GenericMissionCreator {
 					if (entity.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) continue;
 					if (entity.getMemoryWithoutUpdate() != null && entity.getMemoryWithoutUpdate().getBoolean("$ttWeaponsCache")) continue;
 					if (entity.getCircularOrbitRadius() > 10000f) continue;
+					if (entity.getContainingLocation() != null && entity.getContainingLocation().hasTag(Tags.THEME_HIDDEN)) continue;
 					entityPicker.add(entity, w);
 				}
 				

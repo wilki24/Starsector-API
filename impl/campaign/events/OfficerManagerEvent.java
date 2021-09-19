@@ -154,6 +154,7 @@ public class OfficerManagerEvent extends BaseEventPlugin implements CallableEven
 		
 		if (random.nextFloat() < adminProb) {
 			AvailableOfficer officer = createAdmin(market, random);
+			officer.timeRemaining = dur;
 			addAvailableAdmin(officer);
 			log.info("Added admin at [" + officer.marketId + "]");
 		}

@@ -50,6 +50,7 @@ public class HijackingMission extends HubMissionWithBarEvent {
 		if (person == null) return false;
 		MarketAPI market = person.getMarket();
 		if (market == null) return false;
+		if (market.isPlayerOwned()) return false;
 		
 		if (!setPersonMissionRef(person, "$hijack_ref")) {
 			return false;

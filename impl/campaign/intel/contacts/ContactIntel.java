@@ -54,6 +54,7 @@ public class ContactIntel extends BaseIntelPlugin {
 	public static float MAX_NUM_MISSIONS_BONUS = Global.getSettings().getFloat("priorityContactMaxNumMissionsBonus");
 	public static float MAX_MISSION_QUALITY_BONUS = Global.getSettings().getFloat("priorityContactMaxMissionQualityBonus");
 	public static float DEFAULT_POTENTIAL_CONTACT_PROB = Global.getSettings().getFloat("defaultPotentialContactProbability");
+	public static float ADD_PER_FAIL = Global.getSettings().getFloat("potentialContactProbabilityAddPerFail");
 	public static float DAYS_AT_PRIORITY_FOR_FULL_EFFECT = 30;
 	
 	public static String UPDATE_RELOCATED_CONTACT = "update_relocated_contact";
@@ -161,7 +162,7 @@ public class ContactIntel extends BaseIntelPlugin {
 		unsetFlags();
 		
 		if (state != ContactState.LOST_CONTACT_DECIV && market != null) {
-			if (!marketWasDeciv && market.hasCondition(Conditions.DECIVILIZED)) {
+			if (!marketWasDeciv && (market.hasCondition(Conditions.DECIVILIZED) || !market.isInEconomy())) {
 				MarketAPI other = findMarketToRelocateTo();
 				if (other == null) {
 					endAfterDelay();
@@ -578,13 +579,15 @@ public class ContactIntel extends BaseIntelPlugin {
 	public void ensureIsAddedToMarket() {
 		if (market == null) return;
 		
+		boolean hadPerson = market.getPeopleCopy().contains(person) || market == person.getMarket();
+		
 		if (person.getMarket() != null) {
 			person.getMarket().removePerson(person);
 		}
 		
 		if (market.getPeopleCopy().contains(person)) return;
 		market.addPerson(person);
-		wasAddedToMarket = true;
+		if (!hadPerson) wasAddedToMarket = true;
 	}
 	public void develop(IntelUIAPI ui) {
 		ensureIsInCommDirectory();
@@ -826,15 +829,28 @@ public class ContactIntel extends BaseIntelPlugin {
 	public static void addPotentialContact(float probability, PersonAPI contact, MarketAPI market, TextPanelAPI text) {
 		if (playerHasContact(contact)) return;
 		if (contact.getFaction().isPlayerFaction()) return;
+		if (market != null && market.getMemoryWithoutUpdate().getBoolean(NO_CONTACTS_ON_MARKET)) return;
+		if (contact != null && contact.getFaction().getCustomBoolean(Factions.CUSTOM_NO_CONTACTS)) return;
 		
 		Random random = new Random(getContactRandomSeed(contact));
 		// if the player already has some existing relationship with the person, use it to 
 		// modify the probability they'll be available as a potential contact
 		probability += contact.getRelToPlayer().getRel();
-		if (random.nextFloat() >= probability && !DebugFlags.ALWAYS_ADD_POTENTIAL_CONTACT) return;
 		
-		if (market != null && market.getMemoryWithoutUpdate().getBoolean(NO_CONTACTS_ON_MARKET)) return;
-		if (contact != null && contact.getFaction().getCustomBoolean(Factions.CUSTOM_NO_CONTACTS)) return;
+		
+		String key = "$potentialContactRollFails";
+		MemoryAPI mem = Global.getSector().getMemoryWithoutUpdate();
+		float fails = mem.getInt(key);
+		probability += ADD_PER_FAIL * fails;
+		
+		if (random.nextFloat() >= probability && !DebugFlags.ALWAYS_ADD_POTENTIAL_CONTACT) {
+			fails++;
+			mem.set(key, fails);
+			return;
+		}
+		
+		mem.set(key, 0);
+		
 		
 		ContactIntel intel = new ContactIntel(contact, market);
 		Global.getSector().getIntelManager().addIntel(intel, false, text);

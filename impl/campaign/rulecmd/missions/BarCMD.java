@@ -2,6 +2,7 @@ package com.fs.starfarer.api.impl.campaign.rulecmd.missions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -245,11 +246,26 @@ public class BarCMD extends BaseCommandPlugin implements InteractionDialogPlugin
 //		BaseMissionHub.resetMissionAngle(null, market);
 //		BaseMissionHub.getMissionAngle(null, market, random);
 		
+		Collections.sort(events, new Comparator<PortsideBarEvent>() {
+			public int compare(PortsideBarEvent o1, PortsideBarEvent o2) {
+				boolean p1 = o1.isAlwaysShow();
+				boolean p2 = o2.isAlwaysShow();
+				if (p1 && !p2) return -1;
+				if (p2 && !p1) return 1;
+				return 0;
+			}
+		});
+		
 		int curr = 0;
 		//for (PortsideBarEvent event : data.getEvents()) {
 		for (PortsideBarEvent event : events) {
 			if (TutorialMissionIntel.isTutorialInProgress()) continue;
 			if (curr + temp.size() >= max) break;
+			
+//			if (curr < 16) {
+//				curr++;
+//				continue;
+//			}
 			
 			if (event.shouldRemoveEvent()) continue;
 			if (!event.shouldShowAtMarket(market)) continue;
@@ -269,7 +285,9 @@ public class BarCMD extends BaseCommandPlugin implements InteractionDialogPlugin
 			
 			addedSomething = true;
 			
-			curr++;
+			if (!event.isAlwaysShow()) {
+				curr++;
+			}
 			if (curr >= num) break;
 		}
 		

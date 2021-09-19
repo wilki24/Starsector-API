@@ -12,10 +12,10 @@ import com.fs.starfarer.api.campaign.OptionPanelAPI;
 import com.fs.starfarer.api.campaign.TextPanelAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.characters.MutableCharacterStatsAPI;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.characters.SkillSpecAPI;
-import com.fs.starfarer.api.characters.FullName.Gender;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent.SkillPickPreference;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -48,6 +48,10 @@ public class LuddicPathBaseBarEvent extends BaseBarEventWithPerson {
 	public static int COST = 10000;
 	
 	protected LuddicPathBaseIntel intel;
+	
+	public boolean isAlwaysShow() {
+		return true;
+	}
 	
 	public LuddicPathBaseBarEvent(LuddicPathBaseIntel intel) {
 		this.intel = intel;

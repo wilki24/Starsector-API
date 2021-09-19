@@ -29,6 +29,8 @@ public class Tags {
 	
 	public static final String SYSTEM_CUT_OFF_FROM_HYPER = "system_cut_off_from_hyper";
 	
+	public static final String THEME_HIDDEN = "theme_hidden";
+	
 	public static final String THEME_CORE_UNPOPULATED = "theme_core_unpopulated";
 	public static final String THEME_CORE_POPULATED = "theme_core_populated";
 	public static final String THEME_CORE = "theme_core";
@@ -114,6 +116,8 @@ public class Tags {
 	public static final String HULLMOD_PEAK_TIME = "peak_time";
 	public static final String HULLMOD_NOT_PHASE = "notPhase";
 	public static final String HULLMOD_NOT_AUTO = "notAuto";
+	
+	public static final String HULLMOD_NO_BUILD_IN = "no_build_in";
 	
 	public static final String HULLMOD_SHIELDS = "shields";
 	public static final String HULLMOD_DEFENSIVE = "defensive";

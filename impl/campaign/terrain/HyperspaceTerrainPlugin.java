@@ -1355,7 +1355,7 @@ public class HyperspaceTerrainPlugin extends BaseTiledTerrain { // implements Ne
 						    "Some commanders are known to use these to gain additional " +
 						    "speed, and to save fuel - a practice known as \"storm riding\".", Misc.getTextColor(), pad);
 			
-			tooltip.addPara("\"Slow-moving\" fleets to not attract storm strikes.", Misc.getTextColor(), pad);
+			tooltip.addPara("\"Slow-moving\" fleets do not attract storm strikes.", Misc.getTextColor(), pad);
 		}
 		
 		if (expanded) {

@@ -64,6 +64,7 @@ public class SmugglingScanScript implements EveryFrameScript {
 		List<CampaignFleetAPI> patrols = Misc.findNearbyFleets(player, MAX_RANGE_FROM_PLAYER, new FleetFilter() {
 			public boolean accept(CampaignFleetAPI curr) {
 				if (curr.getFaction() != market.getFaction()) return false;
+				if (curr.getFaction().isPlayerFaction()) return false;
 				if (curr.isHostileTo(player)) return false;
 				if (curr.isStationMode()) return false;
 				if (Misc.getSourceMarket(curr) != market) return false;
