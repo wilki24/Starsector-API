@@ -1,6 +1,6 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
-public class Themes {
+public class ThemesMod {
 
 	public static final String NO_THEME = "no_theme";
 	

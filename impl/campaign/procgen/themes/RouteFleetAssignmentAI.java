@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
 import com.fs.starfarer.api.util.Misc;
 
-public class RouteFleetAssignmentAI extends BaseAssignmentAI {
+public class RouteFleetAssignmentAIMod extends BaseAssignmentAIMod {
 
 	public static enum TravelState {
 		IN_SYSTEM,
@@ -30,14 +30,14 @@ public class RouteFleetAssignmentAI extends BaseAssignmentAI {
 	protected Boolean gaveReturnAssignments = null;
 
 
-	public RouteFleetAssignmentAI(CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
+	public RouteFleetAssignmentAIMod(CampaignFleetAPI fleet, RouteData route, FleetActionDelegate delegate) {
 		super();
 		this.fleet = fleet;
 		this.route = route;
 		this.delegate = delegate;
 		giveInitialAssignments();
 	}
-	public RouteFleetAssignmentAI(CampaignFleetAPI fleet, RouteData route) {
+	public RouteFleetAssignmentAIMod(CampaignFleetAPI fleet, RouteData route) {
 		super();
 		this.fleet = fleet;
 		this.route = route;

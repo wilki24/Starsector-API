@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,23 +28,22 @@ import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
 import com.fs.starfarer.api.impl.campaign.procgen.PlanetGenDataSpec;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator.StarSystemType;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.ShipRecoverySpecialCreator;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.SpecialCreationContext;
+import data.scripts.themes.SalvageSpecialAssignerMod.ShipRecoverySpecialCreator;
+import data.scripts.themes.SalvageSpecialAssignerMod.SpecialCreationContext;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 
 
-public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
+public class MiscellaneousThemeGeneratorMod extends BaseThemeGeneratorMod {
 
 	public static float PROB_TO_ADD_SOMETHING = 0.5f;
 	
 	public static int MIN_GATES = Global.getSettings().getInt("minNonCoreGatesInSector");
 	public static int MAX_GATES = Global.getSettings().getInt("maxNonCoreGatesInSector");
-	public static int MIN_GATES_TO_ADD = Global.getSettings().getInt("minGatesToAddOnSecondPass");
 	
 	
 	public String getThemeId() {
-		return Themes.MISC;
+		return ThemesMod.MISC;
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 	}
 
 	@Override
-	public void generateForSector(ThemeGenContext context, float allowedUnusedFraction) {
+	public void generateForSector(ThemeGenContextMod context, float allowedUnusedFraction) {
 		
 		if (DEBUG) System.out.println("\n\n\n");
 		if (DEBUG) System.out.println("Generating misc derelicts etc in all systems");
@@ -92,7 +91,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		
 		SpecialCreationContext specialContext = new SpecialCreationContext();
 		specialContext.themeId = getThemeId();
-		SalvageSpecialAssigner.assignSpecials(all, specialContext);
+		SalvageSpecialAssignerMod.assignSpecials(all, specialContext);
 		
 		if (DEBUG) System.out.println("Finished generating misc derelicts\n\n\n\n\n");
 		
@@ -169,7 +168,6 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 			long seed = StarSystemGenerator.random.nextLong();
 			planet.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SEED, seed);
 			planet.getMemoryWithoutUpdate().set(MemFlags.SALVAGE_SPEC_ID_OVERRIDE, "red_planet");
-			planet.addTag(Tags.NOT_RANDOM_MISSION_TARGET);
 			//planet.addTag(Tags.SALVAGEABLE);
 			
 //			SectorEntityToken beacon = Misc.addWarningBeacon(planet, gap, Tags.BEACON_HIGH);
@@ -189,7 +187,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		addExtraGates(context);
 	}
 	
-	protected void addDerelicts(ThemeGenContext context, String variant,
+	protected void addDerelicts(ThemeGenContextMod context, String variant,
 					int minNonSalvageable, int maxNonSalvageable, 
 					int minSalvageable, int maxSalvageable, 
 					String ... allowedThemes) {
@@ -233,7 +231,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 							}
 						} else {
 							numNonSalvageable--;
-							SalvageSpecialAssigner.assignSpecials(ae.entity, true);
+							SalvageSpecialAssignerMod.assignSpecials(ae.entity);
 						}
 						if (DEBUG) System.out.println("      Added " + variant + " to " + data.system + "\n");
 					}
@@ -247,7 +245,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 	}
 	
 	
-	protected void addSolarShadesAndMirrors(ThemeGenContext context) {
+	protected void addSolarShadesAndMirrors(ThemeGenContextMod context) {
 		
 		int num = 2 + random.nextInt(3);
 		
@@ -425,7 +423,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		
 		if (random.nextFloat() < 0.5f) return;
 		
-		WeightedRandomPicker<String> factions = SalvageSpecialAssigner.getNearbyFactions(random, data.system.getCenter(),
+		WeightedRandomPicker<String> factions = SalvageSpecialAssignerMod.getNearbyFactions(random, data.system.getCenter(),
 														15f, 10f, 10f);
 		
 		addShipGraveyard(data, 0.05f, 1, 1, factions);
@@ -450,7 +448,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 	}
 	
 	
-	protected void addExtraGates(ThemeGenContext context) {
+	protected void addExtraGates(ThemeGenContextMod context) {
 //		List<SectorEntityToken> gates = new ArrayList<SectorEntityToken>();
 //		List<StarSystemAPI> systems = new ArrayList<StarSystemAPI>();
 //		List<Constellation> list = new ArrayList<Constellation>(context.constellations);
@@ -476,13 +474,12 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		
 		
 		int addGates = MIN_GATES + random.nextInt(MAX_GATES - MIN_GATES + 1) - gates.size();
-		if (addGates < MIN_GATES_TO_ADD) addGates = MIN_GATES_TO_ADD;
 		if (addGates <= 0) {
 			if (DEBUG) System.out.println("  Already have " + gates.size() + " gates, not adding any");
 			return;
 		}
 		
-		List<StarSystemData> all = new ArrayList<BaseThemeGenerator.StarSystemData>();
+		List<StarSystemData> all = new ArrayList<BaseThemeGeneratorMod.StarSystemData>();
 		
 		if (DEBUG) System.out.println("");
 		if (DEBUG) System.out.println("");
@@ -508,7 +505,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 			if (farthest != null) {
 				StarSystemData data = new StarSystemData();
 				data.system = farthest;
-				WeightedRandomPicker<String> factions = SalvageSpecialAssigner.getNearbyFactions(random, farthest.getCenter(),
+				WeightedRandomPicker<String> factions = SalvageSpecialAssignerMod.getNearbyFactions(random, farthest.getCenter(),
 																				15f, 5f, 5f);
 				AddedEntity gate = addInactiveGate(data, 1f, 0.5f, 0.5f, factions);
 				if (gate != null && gate.entity != null) gates.add(gate.entity);
@@ -521,14 +518,14 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		
 		SpecialCreationContext specialContext = new SpecialCreationContext();
 		specialContext.themeId = getThemeId();
-		SalvageSpecialAssigner.assignSpecials(all, specialContext);
+		SalvageSpecialAssignerMod.assignSpecials(all, specialContext);
 		
 		
 		
 	}
 	
 	
-	protected void addCoronalTaps(ThemeGenContext context) {
+	protected void addCoronalTaps(ThemeGenContextMod context) {
 		if (DEBUG) System.out.println("Adding coronal taps...");
 		
 		List<Constellation> list = new ArrayList<Constellation>(context.constellations);
@@ -581,7 +578,7 @@ public class MiscellaneousThemeGenerator extends BaseThemeGenerator {
 		}
 		
 		int numTaps = 2 + random.nextInt(2);
-		numTaps = 2;
+		numTaps = (int)Global.getSettings().getFloat("sectorCoronalTaps");
 		int added = 0;
 		while (added < numTaps && !tapSystems.isEmpty()) {
 			StarSystemAPI pick = tapSystems.pickAndRemove();

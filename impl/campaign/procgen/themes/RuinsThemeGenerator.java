@@ -1,12 +1,14 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fs.starfarer.api.impl.campaign.procgen.*;
 import org.lwjgl.util.vector.Vector2f;
 
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
@@ -14,26 +16,27 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.SpecialCreationContext;
+import data.scripts.themes.SalvageSpecialAssignerMod.SpecialCreationContext;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.*;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 
 
-public class RuinsThemeGenerator extends BaseThemeGenerator {
+public class RuinsThemeGeneratorMod extends BaseThemeGeneratorMod {
 
-	public static final int MIN_CONSTELLATIONS_WITH_RUINS = 15;
-	public static final int MAX_CONSTELLATIONS_WITH_RUINS = 25;
+	public static final int MIN_CONSTELLATIONS_WITH_RUINS = (int)Global.getSettings().getFloat("sectorConstellationRuinsMin");
+	public static final int MAX_CONSTELLATIONS_WITH_RUINS = (int)Global.getSettings().getFloat("sectorConstellationRuinsMax");
 	
 	public static float CONSTELLATION_SKIP_PROB = 0f;
 	
 	
 	public String getThemeId() {
-		return Themes.RUINS;
+		return ThemesMod.RUINS;
 	}
 
 	
 	@Override
-	public void generateForSector(ThemeGenContext context, float allowedUnusedFraction) {
+	public void generateForSector(ThemeGenContextMod context, float allowedUnusedFraction) {
 		
 		float total = (float) (context.constellations.size() - context.majorThemes.size()) * allowedUnusedFraction;
 		if (total <= 0) return;
@@ -86,7 +89,7 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 				continue;
 			}
 			
-			context.majorThemes.put(c, Themes.RUINS);
+			context.majorThemes.put(c, ThemesMod.RUINS);
 			numUsed++;
 
 			if (DEBUG) System.out.println("Generating " + numMain + " main systems in " + c.getName());
@@ -94,12 +97,11 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 				StarSystemData data = mainCandidates.get(j);
 				populateMain(data);
 				
-				data.system.addTag(Tags.THEME_INTERESTING);
 				data.system.addTag(Tags.THEME_RUINS);
 				data.system.addTag(Tags.THEME_RUINS_MAIN);
 				ruinSystems.add(data);
 
-				RuinsFleetRouteManager fleets = new RuinsFleetRouteManager(data.system);
+				RuinsFleetRouteManagerMod fleets = new RuinsFleetRouteManagerMod(data.system);
 				data.system.addScript(fleets);
 				
 				if (!NameAssigner.isNameSpecial(data.system)) {
@@ -113,7 +115,6 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 				
 				populateNonMain(data);
 				
-				data.system.addTag(Tags.THEME_INTERESTING);
 				data.system.addTag(Tags.THEME_RUINS);
 				data.system.addTag(Tags.THEME_RUINS_SECONDARY);
 				ruinSystems.add(data);
@@ -127,7 +128,7 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 		
 		SpecialCreationContext specialContext = new SpecialCreationContext();
 		specialContext.themeId = getThemeId();
-		SalvageSpecialAssigner.assignSpecials(ruinSystems, specialContext);
+		SalvageSpecialAssignerMod.assignSpecials(ruinSystems, specialContext);
 		
 		if (DEBUG) System.out.println("Finished generating systems with ruins\n\n\n\n\n");
 		
@@ -153,7 +154,7 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 			addHabCenters(data, 0.25f, 1, 1, createStringPicker(Entities.ORBITAL_HABITAT, 10f));
 		}
 		
-		WeightedRandomPicker<String> factions = SalvageSpecialAssigner.getNearbyFactions(random, data.system.getCenter(),
+		WeightedRandomPicker<String> factions = SalvageSpecialAssignerMod.getNearbyFactions(random, data.system.getCenter(),
 																			15f, 10f, 10f);
 		
 		addShipGraveyard(data, 0.05f, 1, 1, factions);
@@ -200,15 +201,15 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 		
 		switch (level) {
 		case HIGH:
-			probGate = 0.5f;
+			probGate = 0.75f;
 			probRelay = 1f;
 			break;
 		case MEDIUM:
-			probGate = 0.3f;
+			probGate = 0.5f;
 			probRelay = 0.75f;
 			break;
 		case LOW:
-			probGate = 0.2f;
+			probGate = 0.25f;
 			probRelay = 0.5f;
 			break;
 		}
@@ -226,8 +227,9 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 		addObjectives(data, probRelay);
 		
 		
-		WeightedRandomPicker<String> factions = SalvageSpecialAssigner.getNearbyFactions(random, system.getCenter(),
+		WeightedRandomPicker<String> factions = SalvageSpecialAssignerMod.getNearbyFactions(random, system.getCenter(),
 												15f, 5f, 5f);
+		
 		addInactiveGate(data, probGate, 0.75f, 0.75f, factions);
 		
 		addShipGraveyard(data, 0.25f, 1, 1, factions);
@@ -307,7 +309,7 @@ public class RuinsThemeGenerator extends BaseThemeGenerator {
 	 * @param sortFrom
 	 * @return
 	 */
-	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContext context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
+	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContextMod context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
 		List<Constellation> constellations = new ArrayList<Constellation>();
 		for (Constellation c : context.constellations) {
 			if (context.majorThemes.containsKey(c)) continue;

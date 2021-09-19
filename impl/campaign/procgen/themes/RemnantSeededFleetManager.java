@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.Random;
 
@@ -23,8 +23,9 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import data.scripts.themes.RemnantAssignmentAIMod;
 
-public class RemnantSeededFleetManager extends SeededFleetManager {
+public class RemnantSeededFleetManagerMod extends SeededFleetManager {
 
 //	public static class DerelictFleetInteractionConfigGen implements FIDConfigGen {
 //		public FIDConfig createConfig() {
@@ -170,7 +171,7 @@ public class RemnantSeededFleetManager extends SeededFleetManager {
 	protected int maxPts;
 	protected float activeChance;
 
-	public RemnantSeededFleetManager(StarSystemAPI system, int minFleets, int maxFleets, int minPts, int maxPts, float activeChance) {
+	public RemnantSeededFleetManagerMod(StarSystemAPI system, int minFleets, int maxFleets, int minPts, int maxPts, float activeChance) {
 		super(system, 1f);
 		this.minPts = minPts;
 		this.maxPts = maxPts;
@@ -244,7 +245,7 @@ public class RemnantSeededFleetManager extends SeededFleetManager {
 				fleet.setLocation(loc.x, loc.y);
 			}
 		} else {
-			fleet.addScript(new RemnantAssignmentAI(fleet, system, null));
+			fleet.addScript(new RemnantAssignmentAIMod(fleet, system, null));
 		}
 		
 		return fleet;

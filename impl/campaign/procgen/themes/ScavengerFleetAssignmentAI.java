@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.List;
 import java.util.Random;
@@ -19,11 +19,11 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 
-public class ScavengerFleetAssignmentAI extends RouteFleetAssignmentAI {
+public class ScavengerFleetAssignmentAIMod extends RouteFleetAssignmentAIMod {
 
 	protected boolean pirate;
 	protected IntervalUtil piracyCheck = new IntervalUtil(0.2f, 0.4f);
-	public ScavengerFleetAssignmentAI(CampaignFleetAPI fleet, RouteData route, boolean pirate) {
+	public ScavengerFleetAssignmentAIMod(CampaignFleetAPI fleet, RouteData route, boolean pirate) {
 		super(fleet, route);
 		this.pirate = pirate;
 	}
@@ -48,7 +48,7 @@ public class ScavengerFleetAssignmentAI extends RouteFleetAssignmentAI {
 		//boolean pickSpecificEntity = (float) Math.random() > 0.2f && segment.systemFrom instanceof StarSystemAPI;
 		boolean pickSpecificEntity = (float) Math.random() > 0.2f && !segment.from.getContainingLocation().isHyperspace();
 		if (pickSpecificEntity) {
-			SectorEntityToken target = RemnantSeededFleetManager.pickEntityToGuard(new Random(), (StarSystemAPI) segment.from.getContainingLocation(), fleet);
+			SectorEntityToken target = RemnantSeededFleetManagerMod.pickEntityToGuard(new Random(), (StarSystemAPI) segment.from.getContainingLocation(), fleet);
 			if (target != null) {
 				if (justSpawned) {
 					Vector2f loc = Misc.getPointAtRadius(new Vector2f(target.getLocation()), 500);

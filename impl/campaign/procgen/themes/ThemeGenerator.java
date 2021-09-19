@@ -1,12 +1,12 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.Random;
 
 
-public interface ThemeGenerator {
+public interface ThemeGeneratorMod {
 	String getThemeId();
 	
-	void generateForSector(ThemeGenContext context, float allowedUnusedFraction);
+	void generateForSector(ThemeGenContextMod context, float allowedUnusedFraction);
 	
 	/**
 	 * Themes with lower "order" values get their shot at generating content first.

@@ -1,26 +1,31 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import data.scripts.themes.DerelictThemeGeneratorMod;
+import data.scripts.themes.RemnantThemeGeneratorMod;
+import data.scripts.themes.RuinsThemeGeneratorMod;
+import data.scripts.themes.MiscellaneousThemeGeneratorMod;
+
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
 
-public class SectorThemeGenerator {
+public class SectorThemeGeneratorMod {
 
-	public static List<ThemeGenerator> generators = new ArrayList<ThemeGenerator>();
+	public static List<ThemeGeneratorMod> generators = new ArrayList<ThemeGeneratorMod>();
 	
 	static {
-		generators.add(new DerelictThemeGenerator());
-		generators.add(new RemnantThemeGenerator());
-		generators.add(new RuinsThemeGenerator());
-		generators.add(new MiscellaneousThemeGenerator());
+		generators.add(new DerelictThemeGeneratorMod());
+		generators.add(new RemnantThemeGeneratorMod());
+		generators.add(new RuinsThemeGeneratorMod());
+		generators.add(new MiscellaneousThemeGeneratorMod());
 	}
 	
-	public static void generate(ThemeGenContext context) {
-		Collections.sort(generators, new Comparator<ThemeGenerator>() {
-			public int compare(ThemeGenerator o1, ThemeGenerator o2) {
+	public static void generate(ThemeGenContextMod context) {
+		Collections.sort(generators, new Comparator<ThemeGeneratorMod>() {
+			public int compare(ThemeGeneratorMod o1, ThemeGeneratorMod o2) {
 				int result = o1.getOrder() - o2.getOrder();
 				if (result == 0) return o1.getThemeId().compareTo(o2.getThemeId());
 				return result;
@@ -28,12 +33,12 @@ public class SectorThemeGenerator {
 		});
 		
 		float totalWeight = 0f;
-		for (ThemeGenerator g : generators) {
+		for (ThemeGeneratorMod g : generators) {
 			totalWeight += g.getWeight();
 			g.setRandom(StarSystemGenerator.random);
 		}
 		
-		for (ThemeGenerator g : generators) {
+		for (ThemeGeneratorMod g : generators) {
 			float w = g.getWeight();
 			
 			float f = 0f;

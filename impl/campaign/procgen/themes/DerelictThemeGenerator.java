@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,19 +31,16 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.SurveyDataSpec
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.SurveyDataSpecial.SurveyDataSpecialType;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.*;
 
 
-public class DerelictThemeGenerator extends BaseThemeGenerator {
-
+public class DerelictThemeGeneratorMod extends BaseThemeGeneratorMod {
 	public static final float BASE_LINK_FRACTION = 0.25f;
-	public static final float SALVAGE_SPECIAL_FRACTION = 0.5f;
-	
+	public static final float SALVAGE_SPECIAL_FRACTION = 0.5f;	
 	public static final int BRANCHES_PER_MOTHERSHIP_MIN = 3;
-	public static final int BRANCHES_PER_MOTHERSHIP_MAX = 4;
-	
+	public static final int BRANCHES_PER_MOTHERSHIP_MAX = 4;	
 	public static final int BRANCHES_PER_SHIP_MIN = 2;
-	public static final int BRANCHES_PER_SHIP_MAX = 3;
-	
+	public static final int BRANCHES_PER_SHIP_MAX = 3;	
 	
 	public static class SystemGenData {
 		public int numMotherships;
@@ -53,11 +50,11 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 	
 	
 	public String getThemeId() {
-		return Themes.DERELICTS;
+		return ThemesMod.DERELICTS;
 	}
 
 	@Override
-	public void generateForSector(ThemeGenContext context, float allowedUnusedFraction) {
+	public void generateForSector(ThemeGenContextMod context, float allowedUnusedFraction) {
 		
 		float total = (float) (context.constellations.size() - context.majorThemes.size()) * allowedUnusedFraction;
 		if (total <= 0) return;
@@ -66,15 +63,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 		float avg2 = (BRANCHES_PER_SHIP_MIN + BRANCHES_PER_SHIP_MAX) / 2f;
 		float perChain = 1 + avg1 + (avg1 * avg2);
 		
-		float num = total / perChain;
-		if (num < 1) num = 1;
-		if (num > 3) num = 3;
-		
-		if (num > 1 && num < 2) {
-			num = 2;
-		} else {
-			num = Math.round(num);
-		}
+		float num = Global.getSettings().getFloat("sectorDerelictMotherships");
 		
 		List<AddedEntity> mothershipsSoFar = new ArrayList<AddedEntity>();
 		
@@ -124,7 +113,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 			cryoSystems.addAll(backup);
 		}
 		
-		int numCryo = 2;
+		int numCryo = (int)Global.getSettings().getFloat("sectorDerelictCryosleepers");
 		int added = 0;
 		WeightedRandomPicker<String> cryosleeperNames = new WeightedRandomPicker<String>(random);
 		cryosleeperNames.add("Calypso");
@@ -139,7 +128,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 		}
 	}
 	
-	protected void addMothershipChain(ThemeGenContext context, List<AddedEntity> mothershipsSoFar) {
+	protected void addMothershipChain(ThemeGenContextMod context, List<AddedEntity> mothershipsSoFar) {
 		
 		List<AddedEntity> all = new ArrayList<AddedEntity>(); 
 		
@@ -164,7 +153,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 		}
 		
 		constellations.remove(main);
-		context.majorThemes.put(main, Themes.DERELICTS);
+		context.majorThemes.put(main, ThemesMod.DERELICTS);
 
 		
 		StarSystemAPI mainSystem = main.getSystemWithMostPlanets();
@@ -247,7 +236,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 		
 		
 		for (Constellation c : constellationsForSurveyShips) {
-			context.majorThemes.put(c, Themes.DERELICTS);
+			context.majorThemes.put(c, ThemesMod.DERELICTS);
 			
 			if (DEBUG) {
 				System.out.println("  Picked for survey ship: [" + c.getNameWithType() + "]");
@@ -300,7 +289,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 			while (k < probeSystemsNearShip && !p2.isEmpty()) {
 				Constellation pick = p2.pickAndRemove();
 				k++;
-				context.majorThemes.put(pick, Themes.NO_THEME);
+				context.majorThemes.put(pick, ThemesMod.NO_THEME);
 				int probesInConstellation = (int) Math.round(StarSystemGenerator.getRandom(1, 3));
 				probes3.addAll(addToConstellation(pick, Entities.DERELICT_SURVEY_PROBE, probesInConstellation, false));
 			}
@@ -766,7 +755,7 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 	 * @param sortFrom
 	 * @return
 	 */
-	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContext context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
+	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContextMod context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
 		List<Constellation> constellations = new ArrayList<Constellation>();
 		for (Constellation c : context.constellations) {
 			if (context.majorThemes.containsKey(c)) continue;
@@ -861,19 +850,3 @@ public class DerelictThemeGenerator extends BaseThemeGenerator {
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

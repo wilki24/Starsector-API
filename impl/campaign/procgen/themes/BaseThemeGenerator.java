@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +56,7 @@ import com.fs.starfarer.api.impl.campaign.terrain.StarCoronaTerrainPlugin;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 
-public abstract class BaseThemeGenerator implements ThemeGenerator {
+public abstract class BaseThemeGeneratorMod implements ThemeGeneratorMod {
 	
 	public static enum HabitationLevel {
 		LOW,
@@ -153,12 +153,12 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 	}
 	
 	protected Random random;
-	public BaseThemeGenerator() {
+	public BaseThemeGeneratorMod() {
 		random = StarSystemGenerator.random;
 	}
 	
 
-	abstract public void generateForSector(ThemeGenContext context, float allowedSectorFraction);
+	abstract public void generateForSector(ThemeGenContextMod context, float allowedSectorFraction);
 	
 	
 	public void addShipGraveyard(StarSystemData data, float chanceToAddAny, int min, int max, WeightedRandomPicker<String> factions) {
@@ -1201,7 +1201,6 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 		case SINGLE:
 		case BINARY_FAR:
 		case TRINARY_2FAR:
-			if (system.getStar() == null) return 0; // alpha site
 			return system.getStar().getRadius();
 		case BINARY_CLOSE:
 		case TRINARY_1CLOSE_1FAR:
@@ -1402,7 +1401,7 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 	}
 	
 	public static AddedEntity addEntityAutoDetermineType(Random random, LocationAPI system, EntityLocation loc, String type, String faction) {
-		if (SalvageEntityGeneratorOld.hasSalvageSpec(type)) {
+		if (SalvageEntityGeneratorOldMod.hasSalvageSpec(type)) {
 			return addEntity(random, system, loc, type, faction);
 		} else {
 			return addNonSalvageEntity(system, loc, type, faction);
@@ -1452,7 +1451,7 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 	}
 	public static SectorEntityToken addSalvageEntity(Random random, LocationAPI location, String id, String faction, Object pluginParams) {
 		if (random == null) random = StarSystemGenerator.random;
-		SalvageEntityGenDataSpec spec = SalvageEntityGeneratorOld.getSalvageSpec(id);
+		SalvageEntityGenDataSpec spec = SalvageEntityGeneratorOldMod.getSalvageSpec(id);
 		
 		CustomCampaignEntityAPI entity = location.addCustomEntity(null, spec.getNameOverride(), id, faction, pluginParams);
 		
@@ -1525,7 +1524,7 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 					data.habitable.add(planet);
 				}
 				
-				for (String conditionId : DerelictThemeGenerator.interestingConditionsWithoutHabitable) {
+				for (String conditionId : DerelictThemeGeneratorMod.interestingConditionsWithoutHabitable) {
 					if (market.hasCondition(conditionId)) {
 						data.resourceRich.add(planet);
 						break;
@@ -1593,12 +1592,3 @@ public abstract class BaseThemeGenerator implements ThemeGenerator {
 	
 	
 }
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,9 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.procgen.SalvageEntityGenDataSpec;
 
-public class SalvageEntityGeneratorOld {
+public class SalvageEntityGeneratorOldMod {
 
 //	protected Constellation con;
 //	

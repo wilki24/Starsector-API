@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -6,20 +6,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fs.starfarer.api.impl.campaign.procgen.*;
 import org.lwjgl.util.vector.Vector2f;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.AICoreOfficerPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
-import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.campaign.OrbitAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -28,25 +28,27 @@ import com.fs.starfarer.api.impl.campaign.FleetEncounterContext;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.BaseFIDDelegate;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDConfig;
 import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDConfigGen;
+import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
-import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
+import com.fs.starfarer.api.impl.campaign.ids.Skills;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.procgen.Constellation;
 import com.fs.starfarer.api.impl.campaign.procgen.DefenderDataOverride;
 import com.fs.starfarer.api.impl.campaign.procgen.NameAssigner;
 import com.fs.starfarer.api.impl.campaign.procgen.StarSystemGenerator;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.RemnantSeededFleetManager.RemnantFleetInteractionConfigGen;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.SalvageSpecialAssigner.SpecialCreationContext;
+import data.scripts.themes.*;
+import data.scripts.themes.RemnantSeededFleetManagerMod.RemnantFleetInteractionConfigGen;
+import data.scripts.themes.SalvageSpecialAssignerMod.SpecialCreationContext;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 
 
-public class RemnantThemeGenerator extends BaseThemeGenerator {
+public class RemnantThemeGeneratorMod extends BaseThemeGeneratorMod {
 
 	public static enum RemnantSystemType {
 		DESTROYED(Tags.THEME_REMNANT_DESTROYED, "$remnantDestroyed"),
@@ -69,26 +71,24 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 	}
 	
 	
-	public static final int MIN_CONSTELLATIONS_WITH_REMNANTS = 15;
-	public static final int MAX_CONSTELLATIONS_WITH_REMNANTS = 25;
+	public static final int MIN_CONSTELLATIONS_WITH_REMNANTS = (int)Global.getSettings().getFloat("sectorConstellationRemnantMin");
+	public static final int MAX_CONSTELLATIONS_WITH_REMNANTS = (int)Global.getSettings().getFloat("sectorConstellationRemnantMax");
 	
-	public static float CONSTELLATION_SKIP_PROB = 0.25f;
+	public static float CONSTELLATION_SKIP_PROB = Global.getSettings().getFloat("sectorConstellationRemnantSkipProb");
 	
 	
 	public String getThemeId() {
-		return Themes.REMNANTS;
+		return ThemesMod.REMNANTS;
 	}
 
 	@Override
-	public void generateForSector(ThemeGenContext context, float allowedUnusedFraction) {
+	public void generateForSector(ThemeGenContextMod context, float allowedUnusedFraction) {
 		
 		float total = (float) (context.constellations.size() - context.majorThemes.size()) * allowedUnusedFraction;
 		if (total <= 0) return;
 		
 		int num = (int) StarSystemGenerator.getNormalRandom(MIN_CONSTELLATIONS_WITH_REMNANTS, MAX_CONSTELLATIONS_WITH_REMNANTS);
-		//num = 30;
 		if (num > total) num = (int) total;
-		
 		
 		int numDestroyed = (int) (num * (0.23f + 0.1f * random.nextFloat()));
 		if (numDestroyed < 1) numDestroyed = 1;
@@ -147,14 +147,17 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				continue;
 			}
 			
+			int doDestroyed =(int)Global.getSettings().getFloat("sectorRemnantPresenceLow");
+			int doSuppresed =(int)Global.getSettings().getFloat("sectorRemnantPresenceMed");
+			
 			RemnantSystemType type = RemnantSystemType.RESURGENT;
-			if (numUsed < numDestroyed) {
+			if ((numUsed < numDestroyed) && doDestroyed>0) {
 				type = RemnantSystemType.DESTROYED;
-			} else if (numUsed < numDestroyed + numSuppressed) {
+			} else if ((numUsed < numDestroyed + numSuppressed) && doSuppresed>0) {
 				type = RemnantSystemType.SUPPRESSED;
 			}
 			
-			context.majorThemes.put(c, Themes.REMNANTS);
+			context.majorThemes.put(c, ThemesMod.REMNANTS);
 			numUsed++;
 
 			if (DEBUG) System.out.println("Generating " + numMain + " main systems in " + c.getName());
@@ -162,11 +165,7 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				StarSystemData data = mainCandidates.get(j);
 				populateMain(data, type);
 				
-				data.system.addTag(Tags.THEME_INTERESTING);
 				data.system.addTag(Tags.THEME_REMNANT);
-				if (type != RemnantSystemType.DESTROYED) {
-					data.system.addTag(Tags.THEME_UNSAFE);
-				}
 				data.system.addTag(Tags.THEME_REMNANT_MAIN);
 				data.system.addTag(type.getTag());
 				remnantSystems.add(data);
@@ -177,10 +176,10 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				
 				
 				if (type == RemnantSystemType.DESTROYED) {
-					RemnantSeededFleetManager fleets = new RemnantSeededFleetManager(data.system, 3, 8, 1, 2, 0.05f);
+					RemnantSeededFleetManagerMod fleets = new RemnantSeededFleetManagerMod(data.system, 3, 8, 1, 2, 0.05f);
 					data.system.addScript(fleets);
 				} else if (type == RemnantSystemType.SUPPRESSED) {
-					RemnantSeededFleetManager fleets = new RemnantSeededFleetManager(data.system, 7, 12, 4, 12, 0.25f);
+					RemnantSeededFleetManagerMod fleets = new RemnantSeededFleetManagerMod(data.system, 7, 12, 4, 12, 0.25f);
 					data.system.addScript(fleets);
 
 					Boolean addStation = random.nextFloat() < suppressedStationMult; 
@@ -189,7 +188,7 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 						List<CampaignFleetAPI> stations = addBattlestations(data, 1f, 1, 1, createStringPicker("remnant_station2_Damaged", 10f));
 						for (CampaignFleetAPI station : stations) {
 							int maxFleets = 2 + random.nextInt(3);
-							RemnantStationFleetManager activeFleets = new RemnantStationFleetManager(
+							RemnantStationFleetManagerMod activeFleets = new RemnantStationFleetManagerMod(
 									station, 1f, 0, maxFleets, 25f, 6, 12);
 							data.system.addScript(activeFleets);
 						}
@@ -199,7 +198,7 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 					List<CampaignFleetAPI> stations = addBattlestations(data, 1f, 1, 1, createStringPicker("remnant_station2_Standard", 10f));
 					for (CampaignFleetAPI station : stations) {
 						int maxFleets = 8 + random.nextInt(5);
-						RemnantStationFleetManager activeFleets = new RemnantStationFleetManager(
+						RemnantStationFleetManagerMod activeFleets = new RemnantStationFleetManagerMod(
 								station, 1f, 0, maxFleets, 15f, 8, 24);
 						data.system.addScript(activeFleets);
 					}
@@ -212,19 +211,13 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				
 				populateNonMain(data);
 				
-				if (type == RemnantSystemType.DESTROYED) {
-					data.system.addTag(Tags.THEME_INTERESTING_MINOR);
-				} else {
-					data.system.addTag(Tags.THEME_INTERESTING);
-				}
 				data.system.addTag(Tags.THEME_REMNANT);
-				//data.system.addTag(Tags.THEME_UNSAFE); // just a few 1-2 frigate fleets, and not even always
 				data.system.addTag(Tags.THEME_REMNANT_SECONDARY);
 				data.system.addTag(type.getTag());
 				remnantSystems.add(data);
 				
 				if (random.nextFloat() < 0.5f) {
-					RemnantSeededFleetManager fleets = new RemnantSeededFleetManager(data.system, 1, 3, 1, 2, 0.05f);
+					RemnantSeededFleetManagerMod fleets = new RemnantSeededFleetManagerMod(data.system, 1, 3, 1, 2, 0.05f);
 					data.system.addScript(fleets);
 				} else {
 					data.system.addTag(Tags.THEME_REMNANT_NO_FLEETS);
@@ -239,7 +232,7 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 		
 		SpecialCreationContext specialContext = new SpecialCreationContext();
 		specialContext.themeId = getThemeId();
-		SalvageSpecialAssigner.assignSpecials(remnantSystems, specialContext);
+		SalvageSpecialAssignerMod.assignSpecials(remnantSystems, specialContext);
 		
 		addDefenders(remnantSystems);
 		
@@ -282,9 +275,6 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 					min = 10;
 					max = 20;
 				}
-				// to compensate for this being changed to use fleet points
-				min *= 3;
-				max *= 3;
 				
 				prob *= mult;
 				min *= mult;
@@ -367,15 +357,15 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 		
 		switch (level) {
 		case HIGH:
-			probGate = 0.5f;
+			probGate = 0.75f;
 			probRelay = 1f;
 			break;
 		case MEDIUM:
-			probGate = 0.3f;
+			probGate = 0.5f;
 			probRelay = 0.75f;
 			break;
 		case LOW:
-			probGate = 0.2f;
+			probGate = 0.25f;
 			probRelay = 0.5f;
 			break;
 		}
@@ -550,7 +540,7 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 	 * @param sortFrom
 	 * @return
 	 */
-	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContext context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
+	protected List<Constellation> getSortedAvailableConstellations(ThemeGenContextMod context, boolean emptyOk, final Vector2f sortFrom, List<Constellation> exclude) {
 		List<Constellation> constellations = new ArrayList<Constellation>();
 		for (Constellation c : context.constellations) {
 			if (context.majorThemes.containsKey(c)) continue;
@@ -613,7 +603,6 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_NO_JUMP, true);
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_ALLOW_DISENGAGE, true);
-				fleet.addTag(Tags.NEUTRINO_HIGH);
 				
 				fleet.setStationMode(true);
 				
@@ -633,28 +622,27 @@ public class RemnantThemeGenerator extends BaseThemeGenerator {
 				convertOrbitWithSpin(fleet, 5f);
 				
 				boolean damaged = type.toLowerCase().contains("damaged");
-				String coreId = Commodities.ALPHA_CORE;
+				float mult = 25f;
+				int level = 20;
 				if (damaged) {
-					// alpha for both types; damaged is already weaker
-					//coreId = Commodities.BETA_CORE;
+					mult = 10f;
+					level = 10;
 					fleet.getMemoryWithoutUpdate().set("$damagedStation", true);
-				}
-					
-				AICoreOfficerPlugin plugin = Misc.getAICoreOfficerPlugin(coreId);
-				PersonAPI commander = plugin.createPerson(coreId, fleet.getFaction().getId(), random);
-				
-				fleet.setCommander(commander);
-				fleet.getFlagship().setCaptain(commander);
-				
-				if (!damaged) {
-					RemnantOfficerGeneratorPlugin.integrateAndAdaptCoreForAIFleet(fleet.getFlagship());
-					RemnantOfficerGeneratorPlugin.addCommanderSkills(commander, fleet, null, 3, random);
-				}
+				} //else {
+					PersonAPI commander = OfficerManagerEvent.createOfficer(
+							Global.getSector().getFaction(Factions.REMNANTS), level, true);
+					if (!damaged) {
+						commander.getStats().setSkillLevel(Skills.GUNNERY_IMPLANTS, 3);
+					}
+					FleetFactoryV3.addCommanderSkills(commander, fleet, random);
+					fleet.setCommander(commander);
+					fleet.getFlagship().setCaptain(commander);
+				//}
 				
 				member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 				
 				
-				//RemnantSeededFleetManager.addRemnantAICoreDrops(random, fleet, mult);
+				//RemnantSeededFleetManagerMod.addRemnantAICoreDrops(random, fleet, mult);
 				
 				result.add(fleet);
 				

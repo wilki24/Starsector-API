@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.Random;
 
@@ -13,13 +13,13 @@ import com.fs.starfarer.api.impl.campaign.fleets.SourceBasedFleetManager;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 
-public class RemnantStationFleetManager extends SourceBasedFleetManager {
+public class RemnantStationFleetManagerMod extends SourceBasedFleetManager {
 
 	protected int minPts;
 	protected int maxPts;
 	protected int totalLost;
 
-	public RemnantStationFleetManager(SectorEntityToken source, float thresholdLY, int minFleets, int maxFleets, float respawnDelay, 
+	public RemnantStationFleetManagerMod(SectorEntityToken source, float thresholdLY, int minFleets, int maxFleets, float respawnDelay, 
 									  int minPts, int maxPts) {
 		super(source, thresholdLY, minFleets, maxFleets, respawnDelay);
 		this.minPts = minPts;
@@ -66,12 +66,12 @@ public class RemnantStationFleetManager extends SourceBasedFleetManager {
 		LocationAPI location = source.getContainingLocation();
 		location.addEntity(fleet);
 		
-		RemnantSeededFleetManager.initRemnantFleetProperties(random, fleet, false);
+		RemnantSeededFleetManagerMod.initRemnantFleetProperties(random, fleet, false);
 		
 		fleet.setLocation(source.getLocation().x, source.getLocation().y);
 		fleet.setFacing(random.nextFloat() * 360f);
 		
-		fleet.addScript(new RemnantAssignmentAI(fleet, (StarSystemAPI) source.getContainingLocation(), source));
+		fleet.addScript(new RemnantAssignmentAIMod(fleet, (StarSystemAPI) source.getContainingLocation(), source));
 		
 		return fleet;
 	}

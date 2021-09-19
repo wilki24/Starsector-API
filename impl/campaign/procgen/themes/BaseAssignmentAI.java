@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import org.lwjgl.util.vector.Vector2f;
 
@@ -26,7 +26,7 @@ import com.fs.starfarer.api.plugins.BuildObjectiveTypePicker.BuildObjectiveParam
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 
-public abstract class BaseAssignmentAI implements EveryFrameScript {
+public abstract class BaseAssignmentAIMod implements EveryFrameScript {
 
 	public interface FleetActionDelegate {
 		boolean canRaid(CampaignFleetAPI fleet, MarketAPI market);
@@ -44,10 +44,10 @@ public abstract class BaseAssignmentAI implements EveryFrameScript {
 	protected Boolean giveInitial = true;
 	protected FleetActionDelegate delegate = null;
 	
-	public BaseAssignmentAI() {
+	public BaseAssignmentAIMod() {
 	}
 
-	public BaseAssignmentAI(CampaignFleetAPI fleet) {
+	public BaseAssignmentAIMod(CampaignFleetAPI fleet) {
 		this.fleet = fleet;
 		giveInitialAssignments();
 	}

@@ -1,4 +1,4 @@
-package com.fs.starfarer.api.impl.campaign.procgen.themes;
+package data.scripts.themes;
 
 import java.util.Random;
 
@@ -23,11 +23,11 @@ import com.fs.starfarer.api.impl.campaign.tutorial.TutorialMissionIntel;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 
-public class RuinsFleetRouteManager extends BaseRouteFleetManager {
+public class RuinsFleetRouteManagerMod extends BaseRouteFleetManager {
 
 	protected StarSystemAPI system;
 	
-	public RuinsFleetRouteManager(StarSystemAPI system) {
+	public RuinsFleetRouteManagerMod(StarSystemAPI system) {
 		super(1f, 14f);
 		this.system = system;
 	}
@@ -120,7 +120,7 @@ public class RuinsFleetRouteManager extends BaseRouteFleetManager {
 		CampaignFleetAPI fleet = createScavenger(type, system.getLocation(), route, route.getMarket(), pirate, random);
 		if (fleet == null) return null;;
 		
-		fleet.addScript(new ScavengerFleetAssignmentAI(fleet, route, pirate));
+		fleet.addScript(new ScavengerFleetAssignmentAIMod(fleet, route, pirate));
 		
 		return fleet;
 	}
