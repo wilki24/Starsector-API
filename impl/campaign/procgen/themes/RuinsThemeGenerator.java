@@ -201,15 +201,15 @@ public class RuinsThemeGeneratorMod extends BaseThemeGeneratorMod {
 		
 		switch (level) {
 		case HIGH:
-			probGate = 0.75f;
+			probGate = 0.5f;
 			probRelay = 1f;
 			break;
 		case MEDIUM:
-			probGate = 0.5f;
+			probGate = 0.3f;
 			probRelay = 0.75f;
 			break;
 		case LOW:
-			probGate = 0.25f;
+			probGate = 0.2f;
 			probRelay = 0.5f;
 			break;
 		}

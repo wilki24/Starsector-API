@@ -10,16 +10,17 @@ import com.fs.starfarer.api.impl.campaign.procgen.*;
 import org.lwjgl.util.vector.Vector2f;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.AICoreOfficerPlugin;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.CustomCampaignEntityAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.JumpPointAPI;
+import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.campaign.OrbitAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.campaign.JumpPointAPI.JumpDestination;
 import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.combat.BattleCreationContext;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
@@ -31,6 +32,7 @@ import com.fs.starfarer.api.impl.campaign.FleetInteractionDialogPluginImpl.FIDCo
 import com.fs.starfarer.api.impl.campaign.events.OfficerManagerEvent;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
+import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
@@ -275,6 +277,9 @@ public class RemnantThemeGeneratorMod extends BaseThemeGeneratorMod {
 					min = 10;
 					max = 20;
 				}
+				// to compensate for this being changed to use fleet points
+				min *= 3;
+				max *= 3;
 				
 				prob *= mult;
 				min *= mult;
@@ -357,15 +362,15 @@ public class RemnantThemeGeneratorMod extends BaseThemeGeneratorMod {
 		
 		switch (level) {
 		case HIGH:
-			probGate = 0.75f;
+			probGate = 0.5f;
 			probRelay = 1f;
 			break;
 		case MEDIUM:
-			probGate = 0.5f;
+			probGate = 0.3f;
 			probRelay = 0.75f;
 			break;
 		case LOW:
-			probGate = 0.25f;
+			probGate = 0.2f;
 			probRelay = 0.5f;
 			break;
 		}
@@ -603,6 +608,7 @@ public class RemnantThemeGeneratorMod extends BaseThemeGeneratorMod {
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_NO_JUMP, true);
 				fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_ALLOW_DISENGAGE, true);
+				fleet.addTag(Tags.NEUTRINO_HIGH);
 				
 				fleet.setStationMode(true);
 				
@@ -622,22 +628,23 @@ public class RemnantThemeGeneratorMod extends BaseThemeGeneratorMod {
 				convertOrbitWithSpin(fleet, 5f);
 				
 				boolean damaged = type.toLowerCase().contains("damaged");
-				float mult = 25f;
-				int level = 20;
+				String coreId = Commodities.ALPHA_CORE;
 				if (damaged) {
-					mult = 10f;
-					level = 10;
+					// alpha for both types; damaged is already weaker
+					//coreId = Commodities.BETA_CORE;
 					fleet.getMemoryWithoutUpdate().set("$damagedStation", true);
-				} //else {
-					PersonAPI commander = OfficerManagerEvent.createOfficer(
-							Global.getSector().getFaction(Factions.REMNANTS), level, true);
-					if (!damaged) {
-						commander.getStats().setSkillLevel(Skills.GUNNERY_IMPLANTS, 3);
 					}
-					FleetFactoryV3.addCommanderSkills(commander, fleet, random);
+					
+				AICoreOfficerPlugin plugin = Misc.getAICoreOfficerPlugin(coreId);
+				PersonAPI commander = plugin.createPerson(coreId, fleet.getFaction().getId(), random);
+				
 					fleet.setCommander(commander);
 					fleet.getFlagship().setCaptain(commander);
-				//}
+				
+				if (!damaged) {
+					RemnantOfficerGeneratorPlugin.integrateAndAdaptCoreForAIFleet(fleet.getFlagship());
+					RemnantOfficerGeneratorPlugin.addCommanderSkills(commander, fleet, null, 3, random);
+				}
 				
 				member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
 				
